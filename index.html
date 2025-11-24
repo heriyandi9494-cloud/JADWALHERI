@@ -20,6 +20,17 @@
   .Olahraga { background-color: #aed581 !important; }
   .Santai { background-color: #f48fb1 !important; }
   .hapus-btn { color: #fff; background-color: #d32f2f; border: none; padding: 3px 7px; border-radius: 5px; cursor: pointer; }
+
+  /* Glow / bercahaya */
+  .glow-bar {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 12px;
+    padding: 10px 0;
+    transition: all 0.5s ease;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
 </style>
 </head>
 <body>
@@ -33,19 +44,13 @@
 
 <div class="mb-3">
   <label>𝐓𝐨𝐭𝐚𝐥 𝐉𝐚𝐦 𝐊𝐞𝐫𝐣𝐚:</label>
-  <div class="progress mb-2">
-    <div id="progressKerja" class="progress-bar bg-primary" role="progressbar" style="width:0%">0 Jam</div>
-  </div>
+  <div id="progressKerja" class="glow-bar mb-2" style="width:0%">0 Jam</div>
 
   <label>𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬 𝐋𝐚𝐢𝐧:</label>
-  <div class="progress mb-2">
-    <div id="progressLain" class="progress-bar bg-warning" role="progressbar" style="width:0%">0% - </div>
-  </div>
+  <div id="progressLain" class="glow-bar mb-2" style="width:0%">0% - </div>
 
   <label>𝐓𝐢𝐝𝐮𝐫:</label>
-  <div class="progress mb-3">
-    <div id="progressTidur" class="progress-bar bg-success" role="progressbar" style="width:0%">0% - </div>
-  </div>
+  <div id="progressTidur" class="glow-bar mb-3" style="width:0%">0% - </div>
 </div>
 
 <table class="table table-responsive" id="jadwal-table">
@@ -91,9 +96,12 @@ function tambahBaris(data={}, index=null){
   jenis.innerHTML = `
     <select onchange="updateData(this)">
       <option value="Tidur" ${data.jenis==='Tidur'?'selected':''}>Tidur</option>
+      <option value="Berangkat Kerja" ${data.jenis==='Berangkat Kerja'?'selected':''}>Berangkat Kerja</option>
+      <option value="Pulang Kerja" ${data.jenis==='Pulang Kerja'?'selected':''}>Pulang Kerja</option>
+      <option value="Mandi" ${data.jenis==='Mandi'?'selected':''}>Mandi</option>
       <option value="Kerja" ${data.jenis==='Kerja'?'selected':''}>Kerja</option>
       <option value="Belajar" ${data.jenis==='Belajar'?'selected':''}>Belajar</option>
-      <option value="Olahraga" ${data.jenis==='Olahraga'?'selected':''}>Olahraga</option>
+      <option value="Gym" ${data.jenis==='Gym'?'selected':''}>Gym</option>
       <option value="Santai" ${data.jenis==='Santai'?'selected':''}>Santai</option>
     </select>
   `;
@@ -147,17 +155,11 @@ function hitungDurasi(row){
     if(dur < 0) dur += 24;
 
     if(jenis === 'Tidur'){
-      const persenTidur = Math.round((dur/8)*100);
-      if(dur >= 6){
-        keteranganVal = ' Sangat Baik';
-      } else {
-        keteranganVal = 'Kurang Baik';
-      }
-    } else if(jenis !== 'Kerja'){ // aktivitas lain
-      const persenAktif = Math.round((dur/(24-12))*100);
-      keteranganVal = persenAktif >= 75 ? 'Kurang Baik' : 'Cukup Baik';
-    } else { // kerja
-      keteranganVal = '𝐓𝐢𝐝𝐚𝐤 𝐛𝐚𝐢𝐤 𝐮𝐧𝐭𝐮𝐤 𝐤𝐞𝐬𝐞𝐡𝐚𝐭𝐚𝐧';
+      keteranganVal = dur >= 7 ? 'Sangat Baik' : 'Kurang Baik';
+    } else if(jenis !== 'Kerja'){ 
+      keteranganVal = dur >= 4 ? 'Baik' : 'Baik';
+    } else { 
+      keteranganVal = 'Jam Kerjamu Masih Ideal';
     }
   }
 
@@ -204,7 +206,7 @@ function updateProgressBars(){
   const tbody = document.getElementById('jadwal-body');
   const filterDate = document.getElementById('filterTanggal').value;
 
-  let totalKerja=0, totalLain=0, countLain=0, totalTidur=0, countTidur=0;
+  let totalKerja=0, totalLain=0, totalTidur=0;
 
   for(let row of tbody.rows){
     const tanggal = row.cells[2].querySelector('input').value;
@@ -212,33 +214,32 @@ function updateProgressBars(){
       const jenis = row.cells[3].querySelector('select').value;
       const dur = parseFloat(row.cells[6].innerText)||0;
 
-      if(jenis === 'Kerja'){
-        totalKerja += dur;
-      } else if(jenis === 'Tidur'){
-        totalTidur += dur;
-        countTidur++;
-      } else { // aktivitas lain
-        totalLain += dur;
-        countLain++;
-      }
+      if(jenis === 'Kerja') totalKerja += dur;
+      else if(jenis === 'Tidur') totalTidur += dur;
+      else totalLain += dur;
     }
   }
 
-  // Update bars
-  document.getElementById('progressKerja').style.width = totalKerja/12*100 + '%';
-  document.getElementById('progressKerja').innerText = totalKerja.toFixed(2) + ' 𝐓𝐢𝐝𝐚𝐤 𝐛𝐚𝐢𝐤 𝐮𝐧𝐭𝐮𝐤 𝐤𝐞𝐬𝐞𝐡𝐚𝐭𝐚𝐧';
+  // Warna + glow dinamis
+  const barKerja = document.getElementById('progressKerja');
+  barKerja.style.width = Math.min(totalKerja/12*100,100)+'%';
+  barKerja.style.background = "#ff5733";
+  barKerja.style.boxShadow = "0 0 15px #ff5733";
+  barKerja.innerText = totalKerja.toFixed(2)+' Jam';
 
-  const persenLain = countLain ? Math.round((totalLain/(24-12))*100) : 0;
-  const keteranganLain = persenLain>=75 ? '𝐊𝐮𝐫𝐚𝐧𝐠 𝐁𝐚𝐢𝐤' : '𝐂𝐮𝐤𝐮𝐩 𝐁𝐚𝐢𝐤';
   const barLain = document.getElementById('progressLain');
+  let persenLain = Math.min(totalLain/12*100,100);
   barLain.style.width = persenLain+'%';
-  barLain.innerText = persenLain+'% - '+keteranganLain;
+  barLain.style.background = "#ffa500";
+  barLain.style.boxShadow = "0 0 15px #ffa500";
+  barLain.innerText = persenLain.toFixed(0)+'% - Cukup Baik';
 
-  const persenTidur = countTidur ? Math.round((totalTidur/6)*100) : 0;
-  const keteranganTidur = totalTidur>=6 ? '𝐒𝐚𝐧𝐠𝐚𝐭 𝐁𝐚𝐢𝐤' : '𝐊𝐮𝐫𝐚𝐧𝐠 𝐁𝐚𝐢𝐤';
   const barTidur = document.getElementById('progressTidur');
+  let persenTidur = Math.min(totalTidur/8*100,100);
   barTidur.style.width = persenTidur+'%';
-  barTidur.innerText = persenTidur+'% - '+keteranganTidur;
+  barTidur.style.background = "#4caf50";
+  barTidur.style.boxShadow = "0 0 15px #4caf50";
+  barTidur.innerText = persenTidur.toFixed(0)+'% - '+(totalTidur>=7?'Sangat Baik':'Kurang Baik');
 }
 
 jadwalData.forEach(d=>tambahBaris(d));
