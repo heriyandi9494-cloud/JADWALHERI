@@ -6,92 +6,70 @@
 <title>Jadwal Aktivitas Sehari-hari</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-  body {
-    background-color: #f0f4f8;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  th, td {
-    text-align: center;
-    padding: 10px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-  }
-  th {
-    background-color: #0663f8;
-    color: white;
-  }
-  tr:nth-child(even) td {
-    background-color: #e3f2fd;
-  }
-  tr:hover td {
-    background-color: #ffe082;
-    cursor: pointer;
-  }
-  select, input[type="time"], input[type="date"] {
-    width: 100%;
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  .keterangan {
-    font-weight: bold;
-    color: #d32f2f;
-  }
-  /* Highlight berdasarkan aktivitas */
+  body { background-color: #f0f4f8; font-family: Arial, sans-serif; padding: 20px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: center; padding: 10px; border-radius: 8px; transition: all 0.3s ease; }
+  th { background-color: #ee0a25; color: white; }
+  tr:nth-child(even) td { background-color: #e3f2fd; }
+  tr:hover td { background-color: #ffe082; cursor: pointer; }
+  select, input[type="time"], input[type="date"] { width: 100%; padding: 5px; border-radius: 5px; border: 1px solid #ccc; }
+  .keterangan { font-weight: bold; color: #d32f2f; }
   .Tidur { background-color: #b2dfdb !important; }
   .Kerja { background-color: #ffcc80 !important; }
   .Belajar { background-color: #c5cae9 !important; }
   .Olahraga { background-color: #aed581 !important; }
   .Santai { background-color: #f48fb1 !important; }
-  .hapus-btn {
-    color: #fff;
-    background-color: #d32f2f;
-    border: none;
-    padding: 3px 7px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+  .hapus-btn { color: #fff; background-color: #d32f2f; border: none; padding: 3px 7px; border-radius: 5px; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<h2 class="text-center mb-4">𝐉𝐚𝐝𝐰𝐚𝐥 𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬 𝐓𝐎𝐌𝐘𝐂𝐔 𝐒𝐞𝐡𝐚𝐫𝐢-𝐡𝐚𝐫𝐢</h2>
+<h2 class="text-center mb-4">𝐉𝐚𝐝𝐰𝐚𝐥 𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬 𝐇𝐞𝐫𝐢 𝐒𝐞𝐡𝐚𝐫𝐢-𝐡𝐚𝐫𝐢</h2>
 
-<!-- Progress Bar Produktif -->
 <div class="mb-3">
-  <label>𝐓𝐨𝐭𝐚𝐥 𝐏𝐫𝐨𝐝𝐮𝐤𝐭𝐢𝐟 𝐇𝐚𝐫𝐢 𝐈𝐧𝐢:</label>
-  <div class="progress">
-    <div id="progressProduktif" class="progress-bar bg-success" role="progressbar" style="width:0%">0%</div>
+  <label>𝐏𝐢𝐥𝐢𝐡 𝐓𝐚𝐧𝐠𝐠𝐚𝐥:</label>
+  <input type="date" id="filterTanggal" onchange="updateProgressBars()">
+</div>
+
+<div class="mb-3">
+  <label>𝐓𝐨𝐭𝐚𝐥 𝐉𝐚𝐦 𝐊𝐞𝐫𝐣𝐚:</label>
+  <div class="progress mb-2">
+    <div id="progressKerja" class="progress-bar bg-primary" role="progressbar" style="width:0%">0 Jam</div>
+  </div>
+
+  <label>𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬 𝐋𝐚𝐢𝐧:</label>
+  <div class="progress mb-2">
+    <div id="progressLain" class="progress-bar bg-warning" role="progressbar" style="width:0%">0% - </div>
+  </div>
+
+  <label>𝐓𝐢𝐝𝐮𝐫:</label>
+  <div class="progress mb-3">
+    <div id="progressTidur" class="progress-bar bg-success" role="progressbar" style="width:0%">0% - </div>
   </div>
 </div>
 
 <table class="table table-responsive" id="jadwal-table">
   <thead>
     <tr>
-      <th>𝐍𝐨.</th>
-      <th>𝐇𝐚𝐫𝐢</th>
-      <th>𝐓𝐚𝐧𝐠𝐠𝐚𝐥</th>
-      <th>𝐉𝐞𝐧𝐢𝐬 𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬</th>
-      <th>𝐖𝐚𝐤𝐭𝐮 𝐌𝐮𝐥𝐚𝐢</th>
-      <th>𝐖𝐚𝐤𝐭𝐮 𝐒𝐞𝐥𝐞𝐬𝐚𝐢</th>
-      <th>𝐏𝐞𝐫𝐬𝐞𝐧𝐭𝐚𝐬𝐞 𝐏𝐫𝐨𝐝𝐮𝐤𝐭𝐢𝐟</th>
-      <th>𝐊𝐞𝐭𝐞𝐫𝐚𝐧𝐠𝐚𝐧</th>
-      <th>𝐀𝐤𝐬𝐢</th>
+      <th>No.</th>
+      <th>Hari</th>
+      <th>Tanggal</th>
+      <th>Jenis Aktivitas</th>
+      <th>Waktu Mulai</th>
+      <th>Waktu Selesai</th>
+      <th>Durasi (Jam)</th>
+      <th>Keterangan</th>
+      <th>Aksi</th>
     </tr>
   </thead>
   <tbody id="jadwal-body"></tbody>
 </table>
 
 <script>
-// Inisialisasi data dari localStorage
 let jadwalData = JSON.parse(localStorage.getItem('jadwalData')) || [];
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('filterTanggal').value = today;
 
-// Fungsi menambahkan baris
 function tambahBaris(data={}, index=null){
   const tbody = document.getElementById('jadwal-body');
   const row = tbody.insertRow(index===null ? -1 : index);
@@ -102,21 +80,14 @@ function tambahBaris(data={}, index=null){
   const jenis = row.insertCell();
   const mulai = row.insertCell();
   const selesai = row.insertCell();
-  const produktif = row.insertCell();
+  const durasi = row.insertCell();
   const keterangan = row.insertCell();
   const aksi = row.insertCell();
 
-  // Nomor urut
   no.innerText = tbody.rows.length;
-
-  // Hari
   hari.contentEditable = true;
   hari.innerText = data.hari || '';
-
-  // Tanggal
-  tanggal.innerHTML = `<input type="date" value="${data.tanggal || ''}" onchange="updateData(this)">`;
-
-  // Jenis Aktivitas
+  tanggal.innerHTML = `<input type="date" value="${data.tanggal || today}" onchange="updateData(this)">`;
   jenis.innerHTML = `
     <select onchange="updateData(this)">
       <option value="Tidur" ${data.jenis==='Tidur'?'selected':''}>Tidur</option>
@@ -126,95 +97,79 @@ function tambahBaris(data={}, index=null){
       <option value="Santai" ${data.jenis==='Santai'?'selected':''}>Santai</option>
     </select>
   `;
-
-  // Waktu Mulai
   mulai.innerHTML = `<input type="time" value="${data.mulai || ''}" onchange="updateData(this)">`;
-  // Waktu Selesai
   selesai.innerHTML = `<input type="time" value="${data.selesai || ''}" onchange="updateData(this)">`;
-
-  // Persentase & keterangan
-  produktif.className = 'produktif';
-  produktif.innerText = data.produktif || '0%';
+  durasi.className = 'produktif';
+  durasi.innerText = data.durasi || '0';
   keterangan.className = 'keterangan';
   keterangan.innerText = data.keterangan || '';
-
-  // Aksi hapus
   aksi.innerHTML = `<button class="hapus-btn" onclick="hapusBaris(this)">Hapus</button>`;
 
-  // Highlight warna sesuai jenis aktivitas
   updateRowColor(row);
 
-  // Simpan otomatis ke localStorage
-  saveData();
-
-  // Tambah baris otomatis jika ini baris terakhir
   row.querySelectorAll('input, select').forEach(input=>{
     input.addEventListener('change', ()=>{
-      hitungProduktif(row);
-      updateProgress();
-      if(row.rowIndex === tbody.rows.length && isRowFilled(row)){
-        tambahBaris();
-      }
+      hitungDurasi(row);
+      updateRowColor(row);
+      saveData();
+      updateProgressBars();
+      if(row.rowIndex === tbody.rows.length && isRowFilled(row)) tambahBaris();
     });
   });
 
-  updateProgress();
+  saveData();
+  updateProgressBars();
 }
 
-// Fungsi update data
 function updateData(elem){
   const row = elem.closest('tr');
-  hitungProduktif(row);
+  hitungDurasi(row);
   updateRowColor(row);
   saveData();
-  updateProgress();
+  updateProgressBars();
 }
 
-// Fungsi cek apakah row diisi
 function isRowFilled(row){
   return [...row.querySelectorAll('input, select')].some(i => i.value);
 }
 
-// Hitung persentase produktif
-function hitungProduktif(row){
+function hitungDurasi(row){
   const mulai = row.cells[4].querySelector('input').value;
   const selesai = row.cells[5].querySelector('input').value;
-  const aktivitas = row.cells[3].querySelector('select').value;
-
-  let produktifVal = 0;
+  const jenis = row.cells[3].querySelector('select').value;
+  let dur = 0;
   let keteranganVal = '';
 
   if(mulai && selesai){
     let start = new Date(`1970-01-01T${mulai}:00`);
     let end = new Date(`1970-01-01T${selesai}:00`);
-    let diff = (end - start)/(1000*60*60);
-    if(diff < 0) diff += 24;
+    dur = (end - start)/(1000*60*60);
+    if(dur < 0) dur += 24;
 
-    if(aktivitas.toLowerCase() !== 'tidur'){
-      produktifVal = Math.round((diff/(24-8))*100);
-    } else {
-      produktifVal = 0;
-    }
-
-    // Keterangan sesuai aturan baru
-    if(produktifVal >= 75){
-      keteranganVal = '𝐓𝐎𝐌𝐘𝐂𝐔! 𝐀𝐭𝐮𝐫 𝐰𝐚𝐤𝐭𝐮 𝐢𝐬𝐭𝐢𝐫𝐚𝐡𝐚𝐭 𝐀𝐧𝐝𝐚';
-      row.cells[7].style.color = 'red'; // warna merah
-    } else if(produktifVal >= 0 && produktifVal < 75){
-      keteranganVal = '𝐓𝐎𝐌𝐘𝐂𝐔! 𝐖𝐚𝐤𝐭𝐮 𝐢𝐬𝐭𝐢𝐫𝐚𝐡𝐚𝐭 𝐀𝐧𝐝𝐚 𝐜𝐮𝐤𝐮𝐩';
-      row.cells[7].style.color = 'black'; // warna hitam
-    } else if(produktifVal < 0){
-      keteranganVal = '𝐓𝐎𝐌𝐘𝐂𝐔! 𝐖𝐚𝐤𝐭𝐮 𝐢𝐬𝐭𝐢𝐫𝐚𝐡𝐚𝐭 𝐀𝐧𝐝𝐚 𝐬𝐚𝐧𝐠𝐚𝐭 𝐛𝐚𝐢𝐤';
-      row.cells[7].style.color = 'black'; // warna hitam
+    if(jenis === 'Tidur'){
+      const persenTidur = Math.round((dur/8)*100);
+      if(dur >= 6){
+        keteranganVal = ' Sangat Baik';
+      } else {
+        keteranganVal = 'Kurang Baik';
+      }
+    } else if(jenis !== 'Kerja'){ // aktivitas lain
+      const persenAktif = Math.round((dur/(24-12))*100);
+      keteranganVal = persenAktif >= 75 ? 'Kurang Baik' : 'Cukup Baik';
+    } else { // kerja
+      keteranganVal = '𝐓𝐢𝐝𝐚𝐤 𝐛𝐚𝐢𝐤 𝐮𝐧𝐭𝐮𝐤 𝐤𝐞𝐬𝐞𝐡𝐚𝐭𝐚𝐧';
     }
   }
 
-  row.cells[6].innerText = produktifVal + '%';
+  row.cells[6].innerText = dur.toFixed(2);
   row.cells[7].innerText = keteranganVal;
 }
 
+function updateRowColor(row){
+  const jenis = row.cells[3].querySelector('select').value;
+  row.className = jenis;
+}
 
-// Simpan data ke localStorage
 function saveData(){
   const tbody = document.getElementById('jadwal-body');
   const data = [];
@@ -225,50 +180,69 @@ function saveData(){
       jenis: row.cells[3].querySelector('select').value,
       mulai: row.cells[4].querySelector('input').value,
       selesai: row.cells[5].querySelector('input').value,
-      produktif: row.cells[6].innerText,
+      durasi: row.cells[6].innerText,
       keterangan: row.cells[7].innerText
     });
   }
   localStorage.setItem('jadwalData', JSON.stringify(data));
 }
 
-// Hapus baris
 function hapusBaris(btn){
   const row = btn.closest('tr');
   row.remove();
   saveData();
   updateNoUrut();
-  updateProgress();
+  updateProgressBars();
 }
 
-// Update nomor urut
 function updateNoUrut(){
   const tbody = document.getElementById('jadwal-body');
-  for(let i=0; i<tbody.rows.length; i++){
-    tbody.rows[i].cells[0].innerText = i+1;
-  }
+  for(let i=0;i<tbody.rows.length;i++) tbody.rows[i].cells[0].innerText = i+1;
 }
 
-// Update progress bar total produktif
-function updateProgress(){
+function updateProgressBars(){
   const tbody = document.getElementById('jadwal-body');
-  let totalProduktif = 0;
-  let count = 0;
+  const filterDate = document.getElementById('filterTanggal').value;
+
+  let totalKerja=0, totalLain=0, countLain=0, totalTidur=0, countTidur=0;
+
   for(let row of tbody.rows){
-    let val = parseInt(row.cells[6].innerText) || 0;
-    totalProduktif += val;
-    count++;
+    const tanggal = row.cells[2].querySelector('input').value;
+    if(!filterDate || tanggal === filterDate){
+      const jenis = row.cells[3].querySelector('select').value;
+      const dur = parseFloat(row.cells[6].innerText)||0;
+
+      if(jenis === 'Kerja'){
+        totalKerja += dur;
+      } else if(jenis === 'Tidur'){
+        totalTidur += dur;
+        countTidur++;
+      } else { // aktivitas lain
+        totalLain += dur;
+        countLain++;
+      }
+    }
   }
-  const avg = count ? Math.round(totalProduktif/count) : 0;
-  const bar = document.getElementById('progressProduktif');
-  bar.style.width = avg + '%';
-  bar.innerText = avg + '%';
+
+  // Update bars
+  document.getElementById('progressKerja').style.width = totalKerja/12*100 + '%';
+  document.getElementById('progressKerja').innerText = totalKerja.toFixed(2) + ' 𝐓𝐢𝐝𝐚𝐤 𝐛𝐚𝐢𝐤 𝐮𝐧𝐭𝐮𝐤 𝐤𝐞𝐬𝐞𝐡𝐚𝐭𝐚𝐧';
+
+  const persenLain = countLain ? Math.round((totalLain/(24-12))*100) : 0;
+  const keteranganLain = persenLain>=75 ? '𝐊𝐮𝐫𝐚𝐧𝐠 𝐁𝐚𝐢𝐤' : '𝐂𝐮𝐤𝐮𝐩 𝐁𝐚𝐢𝐤';
+  const barLain = document.getElementById('progressLain');
+  barLain.style.width = persenLain+'%';
+  barLain.innerText = persenLain+'% - '+keteranganLain;
+
+  const persenTidur = countTidur ? Math.round((totalTidur/6)*100) : 0;
+  const keteranganTidur = totalTidur>=6 ? '𝐒𝐚𝐧𝐠𝐚𝐭 𝐁𝐚𝐢𝐤' : '𝐊𝐮𝐫𝐚𝐧𝐠 𝐁𝐚𝐢𝐤';
+  const barTidur = document.getElementById('progressTidur');
+  barTidur.style.width = persenTidur+'%';
+  barTidur.innerText = persenTidur+'% - '+keteranganTidur;
 }
 
-// Load data dari localStorage
-jadwalData.forEach(d => tambahBaris(d));
-if(jadwalData.length === 0) tambahBaris();
+jadwalData.forEach(d=>tambahBaris(d));
+if(jadwalData.length===0) tambahBaris();
 </script>
-
 </body>
 </html>
