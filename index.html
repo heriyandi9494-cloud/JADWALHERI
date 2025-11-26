@@ -1,143 +1,73 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jadwal Aktivitas Sehari-hari</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard Aktivitas (Fixed)</title>
 <style>
-.progress-kerja {
-  background-color: #f10404 !important; /* merah */
-}
-.progress-tidur {
-  background-color: #07e83b !important; /* hijau */
-}
-.progress-lain {
-  background-color: #ffc107 !important; /* kuning */
-}
-.time-morning {
-  background-color: #17ec08 !important;  /* hijau muda */
-}
-
-.time-night {
-  background-color: #ec061d !important;  /* merah muda */
-}
-
-body { font-family: Arial; margin:0; padding:10px; background:#f4f4f4;}
-h2{text-align:center;}
-table{width:100%;border-collapse:collapse;margin-bottom:10px;}
-th, td{padding:6px;border:1px solid #da0c0c;text-align:center;font-size:14px;}
-th{background-color:#6fa9e7;color:rgb(229, 13, 13);}
-.day-senin { background-color: #f4c805 !important; }
-.day-selasa { background-color: #0bf20b !important; }
-.day-rabu { background-color: #0707e3 !important; }
-.day-kamis { background-color: #09c2f0 !important; }
-.day-jumat { background-color: #e50de5 !important; }
-.day-sabtu { background-color: #db3c02 !important; }
-.day-minggu { background-color: #f70101 !important; }
-select, input{width:100%;padding:4px;box-sizing:border-box;}
-button{padding:8px 12px; margin:5px 2px; background:#007BFF; color:white; border:none; border-radius:6px; cursor:pointer; font-size:14px;}
-button:hover{background:#0056b3;}
-#summary{margin-top:10px; padding:10px; background:#fff; border-radius:8px; font-size:14px;}
-.progress-container{ width:100%; background-color:#ddd; border-radius:12px; overflow:hidden; margin-top:4px;}
-.progress-bar{ height:16px; text-align:right; padding-right:4px; line-height:16px; color:white; font-size:12px;}
-.progress-work{background-color:#e80707;}       /* hijau */
-.progress-other{background-color:#ffc107;}      /* kuning */
-.progress-sleep{background-color:#07ea29;}      /* biru */
-.progress-activity-bar{background-color:#007BFF;} /* untuk tabel per aktivitas */
-@media screen and (max-width:600px){ th, td{font-size:12px;padding:4px;} button{font-size:12px;padding:6px;} }
+  body{font-family:Arial;margin:0;padding:12px;background:#f4f4f4}
+  h2{ text-align:center; margin-bottom:12px; }
+  table{width:100%;border-collapse:collapse;margin-bottom:10px;background:#fff}
+  th,td{padding:6px;border:1px solid #ccc;text-align:center;font-size:14px}
+  th{background:#007bff;color:#fff}
+  input,select{width:100%;box-sizing:border-box;padding:6px}
+  button{padding:8px 12px;margin:6px;background:#007bff;color:#fff;border:none;border-radius:6px;cursor:pointer}
+  .progress-container{width:100%;background:#e9ecef;border-radius:12px;overflow:hidden}
+  .progress-bar{height:24px;line-height:24px;color:#fff;padding:0 8px;text-align:left}
+  .progress-work{background:#dc3545}
+  .progress-other{background:#ffc107;color:#000}
+  .progress-sleep{background:#28a745}
+  .progress-activity{background:#007bff}
+  @media (max-width:600px){ th,td{font-size:12px;padding:4px} button{padding:6px} }
 </style>
 </head>
 <body>
 
-<h2>𝐉𝐚𝐝𝐰𝐚𝐥 𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬 𝐇𝐄𝐑𝐈 𝐒𝐞𝐡𝐚𝐫𝐢-𝐡𝐚𝐫𝐢</h2>
+<h2 id="pageTitle">𝐉𝐀𝐃𝐖𝐀𝐋 𝐀𝐊𝐓𝐈𝐕𝐈𝐓𝐀𝐒 𝐇𝐄𝐑𝐈 𝐒𝐄𝐇𝐀𝐑-𝐇𝐀𝐑𝐈</h2>
 
-<label for="filterDate">𝐅𝐢𝐥𝐭𝐞𝐫 𝐓𝐚𝐧𝐠𝐠𝐚𝐥:</label>
-<input type="date" id="filterDate" onchange="filterByDate()">
-
-<table id="activityTable">
-<thead>
-<tr>
-  <th>𝗡𝗢</th>
-  <th>𝗛𝗔𝗥𝗜</th>
-  <th>𝐓𝐀𝐍𝐆𝐆𝐀𝐋</th>
-  <th>𝗝𝗘𝗡𝗜𝗦 𝗔𝗞𝗧𝗜𝗩𝗜𝗧𝗔𝗦</th>
-  <th>𝗪𝗔𝗞𝗧𝗨 𝗠𝗨𝗟𝗔𝗜</th>
-  <th>𝗪𝗔𝗞𝗧𝗨 𝗦𝗘𝗟𝗘𝗦𝗔𝗜</th>
-  <th>𝗗𝗨𝗥𝗔𝗦𝗜/𝗝𝗔𝗠</th>
-  <th>𝗞𝗘𝗧𝗘𝗥𝗔𝗡𝗚𝗔𝗡 (%)</th>
-  <th>𝗔𝗞𝗦𝗜</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-
-<button onclick="addRow()">𝐓𝐚𝐦𝐛𝐚𝐡 𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬</button>
-<button onclick="saveToFirebase()">𝐒𝐢𝐦𝐩𝐚𝐧 𝐤𝐞 𝐅𝐢𝐫𝐞𝐛𝐚𝐬𝐞</button>
-<button onclick="showSummary()">𝐋𝐢𝐡𝐚𝐭 𝐑𝐚𝐧𝐠𝐤𝐮𝐦𝐚𝐧</button>
-
-<div id="summary">
-<h3>𝐑𝐚𝐧𝐠𝐤𝐮𝐦𝐚𝐧 𝐇𝐚𝐫𝐢 𝐈𝐧𝐢</h3>
-<p>𝐓𝐨𝐭𝐚𝐥 𝐉𝐚𝐦 𝐊𝐞𝐫𝐣𝐚:
-  <div class="progress-container"><div id="progressWork" class="progress-bar progress-work" style="width:0%">0%</div></div>
-</p>
-<p>𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬 𝐋𝐚𝐢𝐧𝐧𝐲𝐚:
-  <div class="progress-container"><div id="progressOther" class="progress-bar progress-other" style="width:0%">0%</div></div>
-</p>
-<p>𝐉𝐚𝐦 𝐓𝐢𝐝𝐮𝐫 :
-  <div class="progress-container"><div id="progressSleep" class="progress-bar progress-sleep" style="width:0%">0%</div></div>
-</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+  <button onclick="addRow()">Tambah Aktivitas</button>
+  <button onclick="saveToFirebase()">Simpan ke Firebase</button>
+  <button onclick="showSummary()">Lihat Rangkuman</button>
+  <button onclick="console.log(allData)">Debug allData</button>
 </div>
 
-<!-- Firebase -->
+<label>Filter Tanggal: <input type="date" id="filterDate" onchange="filterByDate()"></label>
+
+<table id="activityTable">
+  <thead>
+    <tr>
+      <th>No</th><th>Hari</th><th>Tanggal</th><th>Jenis Aktivitas</th>
+      <th>Waktu Mulai</th><th>Waktu Selesai</th><th>Durasi (jam)</th>
+      <th>Keterangan</th><th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div id="summary" style="margin-top:12px">
+  <h3>Rangkuman Hari Ini</h3>
+  <div style="margin-bottom:6px">
+    Total Jam Kerja:
+    <div class="progress-container"><div id="progressWork" class="progress-bar progress-work" style="width:0%">Belum ada kerja</div></div>
+  </div>
+  <div style="margin-bottom:6px">
+    Aktivitas lain:
+    <div class="progress-container"><div id="progressOther" class="progress-bar progress-other" style="width:0%">Belum ada aktivitas</div></div>
+  </div>
+  <div>
+    Jam tidur:
+    <div class="progress-container"><div id="progressSleep" class="progress-bar progress-sleep" style="width:0%">Belum tidur</div></div>
+  </div>
+</div>
+
+<!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-function getSummaryText(category, percentage) {
-  if (category === "work") {
-    if (percentage == 0) return "𝘽𝙚𝙡𝙪𝙢 𝙖𝙙𝙖 𝙟𝙖𝙢 𝙠𝙚𝙧𝙟𝙖";
-    if (percentage <= 30) return "𝙆𝙚𝙧𝙟𝙖 𝙧𝙞𝙣𝙜𝙖𝙣";
-    if (percentage <= 60) return "𝙆𝙚𝙧𝙟𝙖 𝙘𝙪𝙠𝙪𝙥";
-    return "𝙅𝙖𝙢 𝙆𝙚𝙧𝙟𝙖𝙢𝙪 𝙎𝙖𝙣𝙜𝙖𝙩 𝙏𝙞𝙣𝙜𝙜𝙞";
-  }
-
-  if (category === "other") {
-    if (percentage == 0) return "𝙏𝙞𝙙𝙖𝙠 𝙖𝙙𝙖 𝙖𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨 𝙡𝙖𝙞𝙣";
-    if (percentage <= 30) return "𝘼𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨 𝙍𝙞𝙣𝙜𝙖𝙣";
-    if (percentage <= 60) return "𝘼𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨 𝙎𝙚𝙙𝙖𝙣𝙜";
-    return "𝐀𝐤𝐭𝐢𝐯𝐢𝐭𝐚𝐬 𝐓𝐢𝐧𝐠𝐠𝐢";
-  }
-
-  if (category === "sleep") {
-    if (percentage == 0) return "𝘽𝙚𝙡𝙪𝙢 𝙏𝙞𝙙𝙪𝙧";
-    if (percentage <= 30) return "𝙏𝙞𝙙𝙪𝙧𝙢𝙪 𝙆𝙪𝙧𝙖𝙣𝙜";
-    if (percentage <= 60) return "𝙏𝙞𝙙𝙪𝙧𝙢𝙪 𝘾𝙪𝙠𝙪𝙥";
-    return "𝙏𝙞𝙙𝙪𝙧𝙢𝙪 𝙨𝙖𝙣𝙜𝙖𝙩 𝙗𝙖𝙞𝙠";
-  }
-}
-function getProgressText(type, percentage) {
-  if (type === "Kerja") return "𝙃𝙚𝙧𝙞 𝙎𝙚𝙙𝙖𝙣𝙜 𝘽𝙚𝙠𝙚𝙧𝙟𝙖";
-  if (type === "Tidur") return "𝙃𝙚𝙧𝙞 𝙎𝙚𝙙𝙖𝙣𝙜 𝙏𝙞𝙙𝙪𝙧";
-  if (type === "Mandi","Santai","Telponan","BerangkatKerja","PulangKerja","Gym","Playgame","Doa")return "𝙃𝙚𝙧𝙞 𝙎𝙚𝙙𝙖𝙣𝙜 𝙈𝙚𝙡𝙖𝙠𝙪𝙠𝙖𝙣 𝘼𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨";
-}
-
-
-function updateTimeColor(select) {
-  const cell = select.parentNode; 
-  const time = select.value;
-  const hour = parseInt(time.split(":")[0]);
-
-  // reset warna
-  cell.classList.remove("time-morning", "time-night");
-
-  if (hour >= 18) {
-    cell.classList.add("time-night");   // jam 18–24 → merah
-  } else {
-    cell.classList.add("time-morning"); // jam 00–18 → hijau
-  }
-}
-
-// Konfigurasi Firebase (ganti dengan milik Anda)
+/* ========== CONFIG FIREBASE (ganti jika perlu) ========== */
 const firebaseConfig = {
   apiKey: "AIzaSyCHnFBBhKUg9I0f84ai8_X7kcuQjqgSK5w",
   authDomain: "loginaksi.firebaseapp.com",
@@ -150,199 +80,251 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const auth = firebase.auth();
 
-const days=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
-const activityTypes=['Mandi','Santai','Telponan','Berangkat Kerja','Kerja','Pulang Kerja','Gym','Playgame','Tidur','Doa'];
-const times=[];
-for(let h=0;h<24;h++){for(let m=0;m<60;m+=5){let hh=h.toString().padStart(2,'0'); let mm=m.toString().padStart(2,'0'); times.push(`${hh}:${mm}`);}}
-
-let allData=[];
-
-// Tambah baris baru
-function addRow(data={}){
-  const table=document.getElementById('activityTable').getElementsByTagName('tbody')[0];
-  const row=table.insertRow();
-  const rowIndex=table.rows.length;
-
-  row.innerHTML=`
-    <td>${rowIndex}</td>
-    <td><select onchange="updateRowColor(this)">${days.map(day=>`<option value="${day.toLowerCase()}" ${data.hari===day?'selected':''}>${day}</option>`).join('')}</select></td>
-    <td><input type="date" value="${data.tanggal||''}" onchange="updateDataArray(this)"></td>
-    <td><select onchange="updateDataArray(this)">${activityTypes.map(act=>`<option ${data.jenis===act?'selected':''}>${act}</option>`).join('')}</select></td>
-    <td><select onchange="updateDuration(this); updateTimeColor(this)">
-    ${times.map(t=>`<option ${data.mulai===t?'selected':''}>${t}</option>`).join('')}
-    </select></td>
-    <td><select onchange="updateDuration(this); updateTimeColor(this)">
-    ${times.map(t=>`<option ${data.selesai===t?'selected':''}>${t}</option>`).join('')}
-    </select></td>
-
-    <td class="duration">0</td>
-    <td class="percentage"><div class="progress-container"><div class="progress-bar progress-activity-bar" style="width:0%">0%</div></div></td>
-    <td><button onclick="removeRow(this)">Hapus</button></td>
-  `;
-  updateRowColor(row.cells[1].children[0]);
-  allData.push({row,rowData:data});
-}
-
-function updateRowColor(select){
-  const row = select.parentNode.parentNode;
-  const cell = row.cells[1];  // kolom Hari
-  const day = select.value.toLowerCase();
-
-  // hapus semua class warna hari
-  cell.className = "";
-
-  // beri class sesuai hari
-  cell.classList.add("day-" + day);
-
-  updateDuration(select);
-}
-
-function removeRow(btn){
-  const row=btn.parentNode.parentNode;
-  const index=allData.findIndex(e=>e.row===row);
-  if(index>-1) allData.splice(index,1);
-  row.parentNode.removeChild(row);
-  updateRowNumbers();
-}
-
-function updateRowNumbers(){
-  const table=document.getElementById('activityTable').getElementsByTagName('tbody')[0];
-  Array.from(table.rows).forEach((row,i)=>{row.cells[0].innerText=i+1;});
-}
-
-function updateDuration(select){
-  const row = select.parentNode.parentNode;
-  const type = row.cells[3].children[0].value;
-  const start = row.cells[4].children[0].value.split(':').map(Number);
-  const end = row.cells[5].children[0].value.split(':').map(Number);
-
-  let duration = (end[0]*60 + end[1]) - (start[0]*60 + start[1]);
-  if(duration < 0) duration += 24*60;
-  duration = (duration / 60).toFixed(2);
-  row.cells[6].innerText = duration;
-
-  // Hitung persen
-  const totalHours = getTotalHours();
-  const perc = totalHours ? ((duration / totalHours) * 100).toFixed(1) : 0;
-
-  const progressBar = row.cells[7].children[0].children[0];
-  progressBar.style.width = perc + "%";
-  progressBar.innerText = getProgressText(type, perc);
-
-  // =====================================
-  // SET WARNA OTOMATIS BERDASARKAN JENIS
-  // =====================================
-  progressBar.classList.remove("progress-kerja", "progress-tidur", "progress-lain");
-
-  if (type === "Kerja") progressBar.classList.add("progress-kerja");
-  else if (type === "Tidur") progressBar.classList.add("progress-tidur");
-  else progressBar.classList.add("progress-lain");
-}
-
-function updateDataArray(input){
-  const row=input.parentNode.parentNode;
-  const index=allData.findIndex(e=>e.row===row);
-  if(index>-1){
-    allData[index].rowData.hari=row.cells[1].children[0].value;
-    allData[index].rowData.tanggal=row.cells[2].children[0].value;
-    allData[index].rowData.jenis=row.cells[3].children[0].value;
-    allData[index].rowData.mulai=row.cells[4].children[0].value;
-    allData[index].rowData.selesai=row.cells[5].children[0].value;
+/* ========== UTILITY / DATA ========== */
+const days = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
+const activityTypes = ['Mandi','Santai','Telponan','Berangkat Kerja','Kerja','Pulang Kerja','Gym','Playgame','Tidur','Doa'];
+const times = [];
+for(let h=0; h<24; h++){
+  for(let m=0;m<60;m+=5){
+    times.push(String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0'));
   }
 }
+let allData = []; // { row, rowData }
 
-function getTotalHours(filterDate=null){
-  const table=document.getElementById('activityTable').getElementsByTagName('tbody')[0];
-  let sum=0;
-  Array.from(table.rows).forEach(row=>{
-    if(!filterDate || row.cells[2].children[0].value===filterDate){
-      sum+=parseFloat(row.cells[6].innerText);
-    }
-  });
-  return sum;
+/* ========== FUNGSI KETERANGAN ======== */
+function getProgressText(type){
+  if(!type) return "Aktivitas tidak diketahui";
+  const t = String(type).toLowerCase().trim();
+  if(t.includes('kerja')) return "𝙃𝙚𝙧𝙞 𝙎𝙚𝙙𝙖𝙣𝙜 𝘽𝙚𝙠𝙚𝙧𝙟𝙖";
+  if(t.includes('tidur')) return "𝙃𝙚𝙧𝙞 𝙎𝙚𝙙𝙖𝙣𝙜 𝙏𝙞𝙙𝙪𝙧";
+  // other keywords
+  const others = ['mandi','santai','telpon','berangkat','pulang','gym','play','doa'];
+  for(const o of others) if(t.includes(o)) return "𝙃𝙚𝙧𝙞 𝙎𝙚𝙙𝙖𝙣𝙜 𝙈𝙚𝙡𝙖𝙠𝙪𝙠𝙖𝙣 𝘼𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨";
+  return "𝙃𝙚𝙧𝙞 𝙎𝙚𝙙𝙖𝙣𝙜 𝘽𝙪𝙡𝙖𝙣𝙜"; // default
 }
 
-function showSummary(filterDate=null){
-  const table=document.getElementById('activityTable').getElementsByTagName('tbody')[0];
-  let totalWork=0, other=0, sleep=0;
-  Array.from(table.rows).forEach(row=>{
-    if(!filterDate || row.cells[2].children[0].value===filterDate){
-      const type=row.cells[3].children[0].value;
-      const duration=parseFloat(row.cells[6].innerText);
-      if(type==='Kerja') totalWork+=duration;
-      else if(type==='Tidur') sleep+=duration;
-      else other+=duration;
-    }
-  });
-  const total=totalWork+other+sleep || 1;
-  const workPerc=(totalWork/total*100).toFixed(1);
-  const otherPerc=(other/total*100).toFixed(1);
-  const sleepPerc=(sleep/total*100).toFixed(1);
+/* ========== ADD ROW ========== */
+function addRow(data = {}){
+  const tbody = document.querySelector('#activityTable tbody');
+  const row = tbody.insertRow();
+  const index = tbody.rows.length;
+  row.innerHTML = `
+    <td>${index}</td>
+    <td>
+      <select class="hari">${days.map(d=>`<option value="${d}">${d}</option>`).join('')}</select>
+    </td>
+    <td><input type="date" class="tanggal" value="${data.tanggal||''}"></td>
+    <td>
+      <select class="jenis">${activityTypes.map(a=>`<option value="${a}">${a}</option>`).join('')}</select>
+    </td>
+    <td>
+      <select class="mulai">${times.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+    </td>
+    <td>
+      <select class="selesai">${times.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+    </td>
+    <td class="duration">0</td>
+    <td class="keterangan"><div class="progress-container"><div class="progress-bar progress-activity" style="width:100%">Belum dihitung</div></div></td>
+    <td><button class="hapus">Hapus</button></td>
+  `;
 
-  document.getElementById('progressWork').style.width=workPerc+'%';
-  document.getElementById('progressWork').innerText = 
-    getSummaryText("work", workPerc);
-  document.getElementById('progressOther').style.width=otherPerc+'%';
-  document.getElementById('progressOther').innerText = 
-    getSummaryText("other", otherPerc);
-  document.getElementById('progressSleep').style.width=sleepPerc+'%';
-  document.getElementById('progressSleep').innerText = 
-    getSummaryText("sleep", sleepPerc);
+  // set default selected values from data if provided
+  if(data.hari) row.querySelector('.hari').value = data.hari;
+  if(data.jenis) row.querySelector('.jenis').value = data.jenis;
+  if(data.mulai) row.querySelector('.mulai').value = data.mulai;
+  if(data.selesai) row.querySelector('.selesai').value = data.selesai;
+
+  // add event listeners
+  const selHari = row.querySelector('.hari');
+  const inpTanggal = row.querySelector('.tanggal');
+  const selJenis = row.querySelector('.jenis');
+  const selMulai = row.querySelector('.mulai');
+  const selSelesai = row.querySelector('.selesai');
+  const btnHapus = row.querySelector('.hapus');
+
+  selHari.addEventListener('change', ()=> { updateRowColor(selHari); saveRowData(row); });
+  inpTanggal.addEventListener('change', ()=> saveRowData(row));
+  selJenis.addEventListener('change', ()=> { updateDuration(selJenis); saveRowData(row); });
+  selMulai.addEventListener('change', ()=> { updateDuration(selMulai); saveRowData(row); });
+  selSelesai.addEventListener('change', ()=> { updateDuration(selSelesai); saveRowData(row); });
+  btnHapus.addEventListener('click', ()=> removeRow(btnHapus));
+
+  // store in allData
+  allData.push({ row, rowData: Object.assign({}, data) });
+
+  // initialize visuals
+  updateRowColor(selHari);
+  updateDuration(selJenis); // calculates duration and keterangan
 }
 
+/* ========== UPDATE ROW COLOR (only day cell) ========== */
+function updateRowColor(select){
+  const cell = select.parentElement;
+  // example mapping, you can customize
+  const map = {
+    'Senin':'#fff0f0','Selasa':'#f0fff0','Rabu':'#f0f8ff','Kamis':'#fff6e6','Jumat':'#f9f0ff','Sabtu':'#fff0e6','Minggu':'#f0ffff'
+  };
+  cell.style.background = map[select.value] || '#ffffff';
+}
+
+/* ========== SAVE one row into allData.rowData = keep current inputs ========== */
+function saveRowData(row){
+  const index = allData.findIndex(e=>e.row===row);
+  if(index === -1) return;
+  allData[index].rowData = {
+    hari: row.querySelector('.hari').value,
+    tanggal: row.querySelector('.tanggal').value,
+    jenis: row.querySelector('.jenis').value,
+    mulai: row.querySelector('.mulai').value,
+    selesai: row.querySelector('.selesai').value,
+    durasi: parseFloat(row.querySelector('.duration').innerText) || 0
+  };
+  // console.log('saved rowData', allData[index].rowData);
+}
+
+/* ========== REMOVE ROW ========== */
+function removeRow(btn){
+  const row = btn.closest('tr');
+  const idx = allData.findIndex(e=>e.row===row);
+  if(idx>-1) allData.splice(idx,1);
+  row.remove();
+  // refresh numbers
+  document.querySelectorAll('#activityTable tbody tr').forEach((r,i)=> r.cells[0].innerText = i+1);
+}
+
+/* ========== UPDATE DURATION & KETERANGAN ========== */
+function updateDuration(elementInsideRow){
+  const row = elementInsideRow.closest('tr');
+  const mulai = row.querySelector('.mulai').value || '00:00';
+  const selesai = row.querySelector('.selesai').value || '00:00';
+  const s = mulai.split(':').map(Number);
+  const e = selesai.split(':').map(Number);
+  let minutes = (e[0]*60 + e[1]) - (s[0]*60 + s[1]);
+  if(minutes < 0) minutes += 24*60;
+  const hours = (minutes/60);
+  row.querySelector('.duration').innerText = (Math.round(hours*100)/100).toFixed(2);
+
+  // warna sel waktu (only the cell)
+  row.querySelector('td:nth-child(5)').style.background = (s[0] < 18) ? '#d4edda' : '#f8d7da';
+  row.querySelector('td:nth-child(6)').style.background = (e[0] < 18) ? '#d4edda' : '#f8d7da';
+
+  // update keterangan text
+  const jenis = row.querySelector('.jenis').value;
+  const progressBar = row.querySelector('.progress-bar');
+  progressBar.innerText = getProgressText(jenis);
+  // keep width fixed to show text
+  progressBar.style.width = '100%';
+
+  // save snapshot into allData
+  saveRowData(row);
+}
+
+/* ========== FILTER BY DATE ========== */
 function filterByDate(){
-  const filterDate=document.getElementById('filterDate').value;
-  const table=document.getElementById('activityTable').getElementsByTagName('tbody')[0];
-  Array.from(table.rows).forEach(row=>{
-    if(!filterDate || row.cells[2].children[0].value===filterDate){
-      row.style.display='';
-    } else {
-      row.style.display='none';
+  const filter = document.getElementById('filterDate').value;
+  document.querySelectorAll('#activityTable tbody tr').forEach(row=>{
+    const val = row.querySelector('.tanggal').value;
+    row.style.display = (!filter || filter === val) ? '' : 'none';
+  });
+  showSummary(filter);
+}
+
+/* ========== SHOW SUMMARY ========== */
+function showSummary(filterDate=null){
+  let totalWork=0, other=0, sleep=0;
+  document.querySelectorAll('#activityTable tbody tr').forEach(row=>{
+    if(row.style.display === 'none') return;
+    if(filterDate && row.querySelector('.tanggal').value !== filterDate) return;
+    const jenis = row.querySelector('.jenis').value.toLowerCase();
+    const dur = parseFloat(row.querySelector('.duration').innerText) || 0;
+    if(jenis.includes('kerja')) totalWork += dur;
+    else if(jenis.includes('tidur')) sleep += dur;
+    else other += dur;
+  });
+  const total = totalWork + other + sleep || 1;
+  const workPerc = ((totalWork/total)*100).toFixed(1);
+  const otherPerc = ((other/total)*100).toFixed(1);
+  const sleepPerc = ((sleep/total)*100).toFixed(1);
+  document.getElementById('progressWork').innerText = totalWork>0 ? 'Kerja: '+workPerc+'%' : 'Belum ada kerja';
+  document.getElementById('progressOther').innerText = other>0 ? 'Aktivitas lain: '+otherPerc+'%' : 'Belum ada aktivitas';
+  document.getElementById('progressSleep').innerText = sleep>0 ? 'Tidur: '+sleepPerc+'%' : 'Belum tidur';
+  document.getElementById('progressWork').style.width = workPerc + '%';
+  document.getElementById('progressOther').style.width = otherPerc + '%';
+  document.getElementById('progressSleep').style.width = sleepPerc + '%';
+}
+
+/* ========== SAVE TO FIREBASE (push each row) ========== */
+function saveToFirebase(){
+  const user = auth.currentUser;
+  if(!user){ alert('Silakan login dulu!'); return; }
+  // push each current allData row
+  // (we assume each allData element has up-to-date rowData)
+  let pushed = 0;
+  allData.forEach(item=>{
+    // ensure rowData saved
+    saveRowData(item.row);
+    const r = item.rowData;
+    if(!r || !r.tanggal) {
+      // skip rows with no date (optional)
+      // console.log('skip row, no data', r);
+      // but we can still push if needed
     }
-  });
-  showSummary(filterDate);
-}
-
-// Simpan semua data ke Firebase
-function saveToFirebase() {
-  const table = document.getElementById("activityTable").getElementsByTagName("tbody")[0];
-  const data = [];
-
-  Array.from(table.rows).forEach(row => {
-    data.push({
-      hari: row.cells[1].children[0].value,
-      tanggal: row.cells[2].children[0].value,
-      jenis: row.cells[3].children[0].value,
-      mulai: row.cells[4].children[0].value,
-      selesai: row.cells[5].children[0].value,
-      durasi: parseFloat(row.cells[6].innerText)
+    const payload = {
+      uid: user.uid,
+      hari: r.hari || '',
+      tanggal: r.tanggal || '',
+      jenis: r.jenis || '',
+      mulai: r.mulai || '',
+      selesai: r.selesai || '',
+      durasi: r.durasi || 0,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    };
+    db.ref('jadwal').push(payload).then(()=> {
+      // optional success per push
+    }).catch(err=>{
+      console.error('push error', err);
+      alert('Error menyimpan: ' + err.message);
     });
+    pushed++;
   });
-
-  db.ref("jadwal")
-    .set(data)
-    .then(() => alert("Data berhasil disimpan di Firebase"))
-    .catch(err => alert("Error: " + err));
+  alert('Mengirim ' + pushed + ' baris ke Firebase (cek database).');
 }
 
-// Load data dari Firebase saat halaman dibuka
+/* ========== LOAD FROM FIREBASE ========== */
 function loadFromFirebase(){
   db.ref('jadwal').on('value', snapshot=>{
-    const val=snapshot.val();
-    const table=document.getElementById('activityTable').getElementsByTagName('tbody')[0];
-    table.innerHTML='';
-    allData=[];
-    if(val){
-      val.forEach(item=>addRow(item));
-    } else addRow();
+    const val = snapshot.val();
+    // clear table
+    const tbody = document.querySelector('#activityTable tbody');
+    tbody.innerHTML = '';
+    allData = [];
+    if(!val) { addRow(); return; }
+    // val is object keyed by push id
+    Object.values(val).forEach(item=>{
+      addRow({
+        hari: item.hari,
+        tanggal: item.tanggal,
+        jenis: item.jenis,
+        mulai: item.mulai,
+        selesai: item.selesai,
+        durasi: item.durasi
+      });
+    });
     showSummary();
+  }, err => {
+    console.error('loadFromFirebase error', err);
   });
 }
 
-// Inisialisasi halaman
+/* ========== INITIALIZATION ========== */
+auth.onAuthStateChanged(user=>{
+  console.log('auth state changed', user && user.uid);
+  // do not auto-redirect here; assume login.html handles redirect
+});
 loadFromFirebase();
-</script>
 
+</script>
 </body>
 </html>
