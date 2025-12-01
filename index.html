@@ -3,445 +3,318 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aktivitas Harian Heri</title>
-<style>
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #0a0a0a;
-  margin:0;
-  padding:20px;
-  color: #f90505; /* <-- Ubah ini sesuai warna yang diinginkan */
+<title>Aktivitas Harian Heri - Neon</title>
 
-}
-
-h1 {
-  text-align:center;
-  margin-bottom:20px;
-}
-
-/* --- Container atas (filter + tombol) --- */
-.top-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap:10px;
-  justify-content:center;
-  margin-bottom:15px;
-}
-
-#filterDate {
-  max-width:200px;
-  width:100%;
-  padding:6px 10px;
-  box-sizing:border-box;
-}
-
-/* --- Tabel --- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom:15px;
-  font-size:14px;
-}
-table th, table td {
-  border: 1px solid #f4f1f1;
-  padding:6px 8px;
-  text-align:center;
-}
-table th {
-  background:#000d0c;
-  color:rgb(4, 243, 239);
-}
-
-/* --- Select / input responsive --- */
-select, input[type="time"], input[type="date"] {
-  width:100%;
-  box-sizing:border-box;
-  padding:4px;
-}
-
-/* --- Warna hari --- */
-.day-cell.day-senin {background:#3606f500;}
-.day-cell.day-selasa {background:#f5045400;}
-.day-cell.day-rabu {background:#f1970600;}
-.day-cell.day-kamis {background:#6504f600;}
-.day-cell.day-jumat {background:#08f11b00;}
-.day-cell.day-sabtu {background:#f1dd0600;}
-.day-cell.day-minggu {background:#f4012600;}
-
-/* --- Warna pagi / malam --- */
-.time-morning {background:#eef3f4;}
-.time-night {background:#0c0c0c;}
-
-/* --- Progress bar --- */
-.progress-container {
-  background:#ddd;
-  width:100%;
-  border-radius:4px;
-  height:20px;
-  position:relative;
-}
-.progress-bar {
-  height:100%;
-  border-radius:4px;
-  width:0%;
-  transition: width 0.3s;
-}
-.progress-work {background:#e70303;}
-.progress-sleep {background:#06f502;}
-.progress-other {background:#3d4240;}
-
-/* --- Summary bar --- */
-.summary-container {
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-bottom:20px;
-}
-.summary-bar {
-  display:flex;
-  flex-direction:column;
-  font-size:12px;
-}
-.summary-bar div {
-  width:100%;
-  background:#e8eaea;
-  border-radius:4px;
-  height:20px;
-  position:relative;
-}
-.summary-bar div span {
-  position:absolute;
-  left:5px;
-  top:0;
-  font-size:12px;
-  line-height:20px;
-}
-
-/* Button */
-button {
-  padding:6px 12px;
-  border:none;
-  background:#f1f4f5;
-  color:rgb(245, 3, 3);
-  border-radius:4px;
-  cursor:pointer;
-}
-button:hover {
-  background:#010f0f;
-}
-
-/* Responsif */
-@media(max-width:480px){
-  table, thead, tbody, th, td, tr {
-    font-size:12px;
-  }
-}
-</style>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+<style>
+body{
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:#0b0b0b;color:#0ff;margin:0;padding:20px;
+  text-shadow:0 0 5px #0ff,0 0 10px #0ff,0 0 20px #0ff;
+}
+h1{text-align:center;color:#0ff;text-shadow:0 0 10px #0ff,0 0 20px #0ff;font-size:28px;}
+#loginBox{
+  max-width:360px;margin:20px auto;padding:20px;
+  background:#111;border-radius:12px;color:white;
+  box-shadow:0 0 10px #0ff,0 0 20px #0ff;
+}
+#loginBox input{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:none;background:#222;color:#0ff;}
+#loginBox button{width:100%;padding:10px;border:none;margin-top:8px;border-radius:6px;font-weight:bold;background:#0ff;color:#000;cursor:pointer;}
+#loginBox button:hover{background:#0aa;color:#fff;}
+#mainApp{display:none;}
+.top-controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:10px;}
+table{width:100%;border-collapse:collapse;margin-top:15px;font-size:14px;background:#111;color:#0ff;}
+table th, table td{border:1px solid #0ff;padding:6px 8px;text-align:center;}
+table th{background:#000;color:#0ff;text-shadow:0 0 5px #0ff;}
+select,input[type="time"],input[type="date"]{width:100%;padding:4px;background:#222;color:#0ff;border:none;border-radius:4px;}
+button.small{padding:6px;border-radius:6px;border:none;background:#0ff;color:#000;cursor:pointer;}
+button.small:hover{background:#0aa;color:#fff;}
+
+/* ===== RANGKUMAN BAR WARNA ===== */
+.summary{
+  text-align:left;margin-bottom:12px;
+  padding:10px;background:#111;border-radius:10px;
+  box-shadow:0 0 10px #0ff,0 0 20px #0ff;
+}
+.summary div{
+  margin-bottom:8px;font-weight:bold;
+}
+
+/* MERAH NEON untuk Kerja */
+#kerjaBar { 
+  color:#ff4b4b;
+  text-shadow:0 0 8px #ff4b4b,0 0 12px #ff4b4b;
+}
+
+/* HIJAU NEON untuk Tidur */
+#tidurBar { 
+  color:#00ff85;
+  text-shadow:0 0 8px #00ff85,0 0 12px #00ff85;
+}
+
+/* KUNING NEON untuk Aktivitas Lain */
+#lainBar { 
+  color:#ffe44b;
+  text-shadow:0 0 8px #ffe44b,0 0 12px #ffe44b;
+}
+
+@media(max-width:480px){table,th,td{font-size:12px}}
+</style>
 </head>
+
 <body>
 
+<!-- LOGIN -->
+<div id="loginBox">
+<h2 style="text-align:center;">𝐒𝐄𝐋𝐀𝐌𝐀𝐓 𝐃𝐀𝐓𝐀𝐍𝐆</h2>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+<button id="loginBtn">𝐋𝐎𝐆𝐈𝐍</button>
+<button id="registerBtn" style="background:#f54291;color:#fff;">𝐃𝐀𝐅𝐓𝐀𝐑 𝐁𝐀𝐑𝐔</button>
+</div>
+
+<!-- APP -->
+<div id="mainApp">
 <h1>𝐀𝐊𝐓𝐈𝐕𝐈𝐓𝐀𝐒 𝐇𝐀𝐑𝐈𝐀𝐍 𝐇𝐄𝐑𝐈</h1>
+<div style="text-align:right;margin-bottom:10px;">
+<button id="logoutBtn" style="background:#ff4444;color:white;padding:8px;border:none;border-radius:6px;">𝐋𝐨𝐠𝐨𝐮𝐭</button>
+</div>
+
+<!-- Rangkuman Neon -->
+<div class="summary">
+<div id="kerjaBar"><span id="textKerja">Kerja: 0 jam 0 menit</span> — <span id="descKerja"></span></div>
+<div id="tidurBar"><span id="textTidur">Tidur: 0 jam 0 menit</span> — <span id="descTidur"></span></div>
+<div id="lainBar"><span id="textLain">Aktivitas Lain: 0 jam 0 menit</span> — <span id="descLain"></span></div>
+</div>
 
 <div class="top-controls">
-  <input type="date" id="filterDate" onchange="filterByDate()">
-  <button onclick="addRow()">𝐓𝐚𝐦𝐛𝐚𝐡 𝐑𝐨𝐰</button>
-  <button onclick="saveToFirebase()">𝐒𝐢𝐦𝐩𝐚𝐧</button>
-</div>
-<!-- BAR JADWAL DR LASER -->
-<a href="https://heriyandi9494-cloud.github.io/drlaser/" target="_blank" 
-   style="
-      display:block;
-      width:100%;
-      background:#f1f3f5;
-      padding:12px;
-      text-align:center;
-      color:rgb(233, 10, 10);
-      font-size:20px;
-      font-weight:bold;
-      border-radius:8px;
-      margin-top:15px;
-      text-decoration:none;
-      box-shadow:0 0 10px rgba(5, 251, 17, 0.6);
-      transition:0.3s;
-   "
-   onmouseover="this.style.background='#3aa0ff'"
-   onmouseout="this.style.background='#1e90ff'">
-   𝐉𝐀𝐃𝐖𝐀𝐋 𝐃𝐑 𝐋𝐀𝐒𝐄𝐑 𝐇𝐄𝐑𝐈
-</a>
-
-<div class="summary-container">
-  <div class="summary-bar">𝐊𝐄𝐑𝐉𝐀: <div><span id="progressWork"></span></div></div>
-  <div class="summary-bar">𝐀𝐊𝐓𝐈𝐕𝐈𝐓𝐀𝐒 𝐋𝐀𝐈𝐍𝐍𝐘𝐀: <div><span id="progressOther"></span></div></div>
-  <div class="summary-bar">𝐓𝐈𝐃𝐔𝐑: <div><span id="progressSleep"></span></div></div>
+<input type="date" id="filterDate">
+<button class="small" id="addRowBtn">𝐓𝐚𝐦𝐛𝐚𝐡 𝐑𝐨𝐰</button>
+<button class="small" id="saveBtn">𝐒𝐢𝐦𝐩𝐚𝐧</button>
 </div>
 
 <table id="activityTable">
-  <thead>
-    <tr>
-      <th>𝐍𝐎</th>
-      <th>𝐇𝐀𝐑𝐈</th>
-      <th>𝐓𝐀𝐍𝐆𝐆𝐀𝐋</th>
-      <th>𝐉𝐄𝐍𝐈𝐒 𝐊𝐄𝐆𝐈𝐀𝐓𝐀𝐍</th>
-      <th>𝐌𝐔𝐋𝐀𝐈</th>
-      <th>𝐒𝐄𝐋𝐄𝐒𝐀𝐈</th>
-      <th>𝐃𝐔𝐑𝐀𝐒𝐈 𝐖𝐀𝐊𝐓𝐔</th>
-      <th>𝐏𝐑𝐎𝐆𝐑𝐄𝐒</th>
-      <th>𝐀𝐊𝐒𝐈</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
+<thead>
+<tr>
+<th>𝐍𝐎</th><th>𝐇𝐀𝐑𝐈</th><th>𝐓𝐀𝐍𝐆𝐆𝐀𝐋</th><th>𝐉𝐄𝐍𝐈𝐒 𝐀𝐊𝐓𝐈𝐕𝐈𝐓𝐀𝐒</th><th>𝐌𝐔𝐋𝐀𝐈</th><th>𝐒𝐄𝐋𝐄𝐒𝐀𝐈</th><th>𝐊𝐄𝐓𝐄𝐑𝐀𝐍𝐆𝐀𝐍</th><th>𝐃𝐔𝐑𝐀𝐒𝐈</th><th>𝐀𝐊𝐒𝐈</th>
+</tr>
+</thead>
+<tbody></tbody>
 </table>
+</div>
 
 <script>
-
-/* ---------- KONFIGURASI FIREBASE (ganti config bila perlu) ---------- */
+// firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyCHnFBBhKUg9I0f84ai8_X7kcuQjqgSK5w",
-  authDomain: "loginaksi.firebaseapp.com",
-  databaseURL: "https://loginaksi-default-rtdb.firebaseio.com",
-  projectId: "loginaksi",
-  storageBucket: "loginaksi.firebasestorage.app",
-  messagingSenderId: "720249983474",
-  appId: "1:720249983474:web:169e0d8aa713cd2b699b6b",
-  measurementId: "G-3P37QDYG60"
+apiKey: "AIzaSyBAdGUDOwhDG5ifw4k8tert-FgmL80R3cc",
+authDomain: "aktivitas-harian-heri.firebaseapp.com",
+projectId: "aktivitas-harian-heri",
+storageBucket: "aktivitas-harian-heri.firebasestorage.app",
+messagingSenderId: "313235505642",
+appId: "1:313235505642:web:20865b04fa65e20b56b293",
+measurementId: "G-GCG86W43BX"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const auth=firebase.auth();
+const db=firebase.database();
+let UID=null;
 
-/* ---------- DATA & UTILS ---------- */
-const days = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
-const activityTypes = ['Mandi','Santai','Telponan','Berangkat Kerja','Kerja','Pulang Kerja','Gym','Playgame','Tidur','Doa'];
+// ==== DOM ====
+const loginBox=document.getElementById('loginBox');
+const mainApp=document.getElementById('mainApp');
+const emailIn=document.getElementById('email');
+const passIn=document.getElementById('password');
+const loginBtn=document.getElementById('loginBtn');
+const registerBtn=document.getElementById('registerBtn');
+const logoutBtn=document.getElementById('logoutBtn');
+const addRowBtn=document.getElementById('addRowBtn');
+const saveBtn=document.getElementById('saveBtn');
+const filterDateIn=document.getElementById('filterDate');
+const tbody=document.querySelector('#activityTable tbody');
 
-function convertTextToHours(text) {
-  if(!text) return 0;
-  const jam = (text.match(/(\d+)j/) || [0,0])[1]*1;
-  const menit = (text.match(/(\d+)m/) || [0,0])[1]*1;
-  return jam + menit/60;
+// ==== AUTH ====
+loginBtn.addEventListener('click',()=>{
+    const e=emailIn.value.trim(), p=passIn.value;
+    if(!e||!p) return alert('Isi email & password');
+    auth.signInWithEmailAndPassword(e,p).catch(err=>alert(err.message));
+});
+registerBtn.addEventListener('click',()=>{
+    const e=emailIn.value.trim(), p=passIn.value;
+    if(!e||!p) return alert('Isi email & password');
+    auth.createUserWithEmailAndPassword(e,p).then(()=>alert('Berhasil daftar')).catch(err=>alert(err.message));
+});
+logoutBtn.addEventListener('click',()=>auth.signOut());
+
+auth.onAuthStateChanged(user=>{
+    if(user){
+        UID=user.uid;
+        loginBox.style.display='none';
+        mainApp.style.display='block';
+        loadFromFirebase();
+    }else{
+        UID=null;
+        loginBox.style.display='block';
+        mainApp.style.display='none';
+        tbody.innerHTML='';
+    }
+});
+
+// ==== TABLE FUNCTION ====
+function addRow(item={}){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+    <td>${tbody.children.length+1}</td>
+    <td><select onchange="updateRow(this)">
+        <option value="Senin">Senin</option>
+        <option value="Selasa">Selasa</option>
+        <option value="Rabu">Rabu</option>
+        <option value="Kamis">Kamis</option>
+        <option value="Jumat">Jumat</option>
+        <option value="Sabtu">Sabtu</option>
+        <option value="Minggu">Minggu</option>
+    </select></td>
+    <td><input type="date" value="${item.tanggal||''}" onchange="updateRow(this)"></td>
+    <td><select onchange="updateRow(this)">
+        <option value="Kerja">Kerja</option>
+        <option value="Tidur">Tidur</option>
+        <option value="Aktivitas Lain">Aktivitas Lain</option>
+        <option value="Gym">Gym</option>
+        <option value="Mandi">Mandi</option>
+        <option value="Telponan">Telponan</option>
+        <option value="Santai">Santai</option>
+        <option value="Berangkat Kerja">Berangkat Kerja</option>
+        <option value="Pulang Kerja">Pulang Kerja</option>
+    </select></td>
+    <td><input type="time" value="${item.mulai||''}" onchange="updateRow(this)"></td>
+    <td><input type="time" value="${item.selesai||''}" onchange="updateRow(this)"></td>
+    <td class="keterangan">-</td>
+    <td class="durasi">0:00</td>
+    <td><button class="small" onclick="removeRow(this)">Hapus</button></td>
+    `;
+    tbody.appendChild(tr);
+
+    if(item.jenis) tr.cells[3].querySelector('select').value=item.jenis;
+    if(item.keterangan) tr.cells[6].innerText=item.keterangan;
+    if(item.durasi) tr.cells[7].innerText=item.durasi;
+
+    updateRow(tr.querySelector('select'));
 }
 
-function formatDuration(hoursFloat){
-  if(isNaN(hoursFloat)) return "0j 0m";
-  const jam=Math.floor(hoursFloat);
-  const menit=Math.round((hoursFloat-jam)*60);
-  return `${jam}j ${menit}m`;
-}
+function updateRow(el){
+    const tr=el.closest('tr');
+    const jenis=tr.cells[3].querySelector('select').value;
+    const ket=tr.querySelector('.keterangan');
 
-function getProgressDescription(type, hoursFloat){
-  if(type==='Kerja'||type==='Berangkat Kerja'||type==='Pulang Kerja'){
-    return `𝙷𝚎𝚛𝚒 𝚜𝚎𝚍𝚊𝚗𝚐 𝙱𝚎𝚔𝚎𝚛𝚓𝚊 (${formatDuration(hoursFloat)})`;
-  } else if(type==='Tidur'){
-    return `𝙷𝚎𝚛𝚒 𝚜𝚎𝚍𝚊𝚗𝚐 𝚃𝚒𝚍𝚞𝚛 (${formatDuration(hoursFloat)})`;
-  } else if(type){
-    return `𝙷𝚎𝚛𝚒 𝚜𝚎𝚍𝚊𝚗𝚐 𝙱𝚎𝚛𝚊𝚔𝚝𝚒𝚟𝚒𝚝𝚊𝚜 (${formatDuration(hoursFloat)})`;
-  }
-  return '';
-}
+    if(jenis==="Kerja") ket.innerText="Heri sedang bekerja";
+    else if(jenis==="Tidur") ket.innerText="Heri sedang tidur";
+    else if(jenis==="Gym") ket.innerText="Heri sedang berolahraga";
+    else if(jenis==="Mandi") ket.innerText="Heri sedang mandi";
+    else if(jenis==="Santai") ket.innerText="Heri sedang santai";
+    else if(jenis==="Telponan") ket.innerText="Heri sedang menelpon";
+    else if(jenis==="Berangkat Kerja") ket.innerText="Heri sedang berangkat kerja";
+    else if(jenis==="Pulang Kerja") ket.innerText="Heri sedang pulang kerja";
+    else ket.innerText="Melakukan aktivitas lain";
 
-function getSummaryText(category, percent){
-  percent = parseFloat(percent);
-  if(category==='work'){
-    if(percent<=0) return "𝘽𝙚𝙡𝙪𝙢 𝙖𝙙𝙖 𝙟𝙖𝙢 𝙠𝙚𝙧𝙟𝙖";
-    if(percent<=30) return "𝙆𝙚𝙧𝙟𝙖 𝙧𝙞𝙣𝙜𝙖𝙣";
-    if(percent<=60) return "𝙅𝙖𝙢 𝙆𝙚𝙧𝙟𝙖𝙢𝙪 𝙈𝙖𝙨𝙞𝙝 𝙄𝙙𝙚𝙖𝙡";
-    return "𝙅𝙖𝙢 𝙆𝙚𝙧𝙟𝙖𝙢𝙪 𝙎𝙖𝙣𝙜𝙖𝙩 𝙏𝙞𝙣𝙜𝙜𝙞";
-  } else if(category==='other'){
-    if(percent<=0) return "𝘽𝙚𝙡𝙪𝙢 𝙖𝙙𝙖 𝙖𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨 𝙡𝙖𝙞𝙣";
-    if(percent<=30) return "𝘼𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨 𝙧𝙞𝙣𝙜𝙖𝙣";
-    if(percent<=60) return "𝘼𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨𝙢𝙪 𝙘𝙪𝙠𝙪𝙥";
-    return "𝘼𝙠𝙩𝙞𝙫𝙞𝙩𝙖𝙨𝙢𝙪 𝙗𝙚𝙧𝙡𝙚𝙗𝙞𝙝𝙖𝙣";
-  } else if(category==='sleep'){
-    if(percent<=0) return "𝘽𝙚𝙡𝙪𝙢 𝙩𝙞𝙙𝙪𝙧";
-    if(percent<=30) return "𝙏𝙞𝙙𝙪𝙧𝙢𝙪 𝙠𝙪𝙧𝙖𝙣𝙜";
-    if(percent<=60) return "𝙅𝙖𝙢 𝙩𝙞𝙙𝙪𝙧𝙢𝙪 𝙘𝙪𝙠𝙪𝙥";
-    return "𝙏𝙞𝙙𝙪𝙧𝙢𝙪 𝙗𝙚𝙧𝙡𝙚𝙗𝙞𝙝𝙖𝙣";
-  }
-  return percent+"%";
-}
-
-/* ---------- TABEL ---------- */
-function addRow(data={}) {
-  const tbody=document.querySelector('#activityTable tbody');
-  const row=tbody.insertRow();
-  const idx=tbody.rows.length;
-  row.innerHTML=`
-    <td>${idx}</td>
-    <td class="day-cell">
-      <select onchange="updateRowColor(this); updateDuration(this)">
-        ${days.map(d=>`<option value="${d}" ${(data.hari===d)?'selected':''}>${d}</option>`).join('')}
-      </select>
-    </td>
-    <td><input type="date" value="${data.tanggal||''}" onchange="autoSetDay(this); updateDuration(this)"></td>
-    <td>
-      <select onchange="updateDuration(this)">
-        ${activityTypes.map(a=>`<option ${data.jenis===a?'selected':''}>${a}</option>`).join('')}
-      </select>
-    </td>
-    <td><input type="time" value="${data.mulai||''}" onchange="updateDuration(this); updateTimeColor(this)"></td>
-    <td><input type="time" value="${data.selesai||''}" onchange="updateDuration(this); updateTimeColor(this)"></td>
-    <td class="duration">0j 0m</td>
-    <td>
-      <div class="progress-container">
-        <div class="progress-bar"></div>
-      </div>
-      <div class="activity-text" style="margin-top:4px;font-size:12px;"></div>
-    </td>
-    <td><button onclick="removeRow(this)">𝐇𝐚𝐩𝐮𝐬</button></td>
-  `;
-  updateRowColor(row.cells[1].querySelector('select'));
-  calculateAllRows();
-}
-
-/* hapus row */
-function removeRow(btn){
-  btn.closest('tr').remove();
-  calculateAllRows();
-}
-
-/* update warna hari */
-function updateRowColor(select){
-  const val=select.value.toLowerCase();
-  const cell=select.parentElement;
-  cell.className='day-cell';
-  const map={
-    'senin':'day-senin','selasa':'day-selasa','rabu':'day-rabu','kamis':'day-kamis',
-    'jumat':'day-jumat','sabtu':'day-sabtu','minggu':'day-minggu'
-  };
-  if(map[val]) cell.classList.add(map[val]);
-}
-
-/* set hari dari tanggal */
-function getDayName(dateString){
-  if(!dateString) return '';
-  const d=new Date(dateString+'T00:00:00');
-  return days[d.getDay()==0?6:d.getDay()-1]; // 0=Minggu
-}
-function autoSetDay(input){
-  const row=input.closest('tr');
-  const daySelect=row.cells[1].querySelector('select');
-  daySelect.value=getDayName(input.value);
-  updateRowColor(daySelect);
-}
-
-/* warna time */
-function updateTimeColor(input){
-  const h=parseInt(input.value.split(':')[0]||0);
-  const cell=input.parentElement;
-  cell.classList.remove('time-morning','time-night');
-  if(h<6||h>=18) cell.classList.add('time-night'); else cell.classList.add('time-morning');
-}
-
-/* hitung durasi */
-function updateDuration(el){
-  const row=el.closest('tr');
-  const type=row.cells[3].querySelector('select').value;
-  const start=row.cells[4].querySelector('input').value;
-  const end=row.cells[5].querySelector('input').value;
-  let dur=0;
-  if(start&&end){
-    let [sh,sm]=start.split(':').map(n=>parseInt(n));
-    let [eh,em]=end.split(':').map(n=>parseInt(n));
-    let diff=(eh*60+em)-(sh*60+sm);
-    if(diff<0) diff+=24*60;
-    dur=diff/60;
-  }
-  row.cells[6].innerText=formatDuration(dur);
-
-  // progress bar
-  const total=getTotalHours()||1;
-  const percent=(dur/total*100).toFixed(1);
-  const bar=row.querySelector('.progress-bar');
-  bar.style.width=percent+'%';
-  bar.className='progress-bar';
-  if(type==='Kerja'||type==='Berangkat Kerja'||type==='Pulang Kerja') bar.classList.add('progress-work');
-  else if(type==='Tidur') bar.classList.add('progress-sleep');
-  else bar.classList.add('progress-other');
-
-  row.querySelector('.activity-text').innerText=getProgressDescription(type,dur);
-
-  showSummary();
-}
-
-/* total jam (semua row) */
-function getTotalHours(filterDate=null){
-  let total=0;
-  document.querySelectorAll('#activityTable tbody tr').forEach(row=>{
-    const dateVal=row.cells[2].querySelector('input').value;
-    if(!filterDate || filterDate===dateVal)
-      total+=convertTextToHours(row.cells[6].innerText);
-  });
-  return total;
-}
-
-/* summary */
-function showSummary(){
-  const totalWork=Array.from(document.querySelectorAll('#activityTable tbody tr'))
-    .filter(r=>['Kerja','Berangkat Kerja','Pulang Kerja'].includes(r.cells[3].querySelector('select').value))
-    .reduce((s,r)=>s+convertTextToHours(r.cells[6].innerText),0);
-  const totalSleep=Array.from(document.querySelectorAll('#activityTable tbody tr'))
-    .filter(r=>r.cells[3].querySelector('select').value==='Tidur')
-    .reduce((s,r)=>s+convertTextToHours(r.cells[6].innerText),0);
-  const totalOther=Array.from(document.querySelectorAll('#activityTable tbody tr'))
-    .filter(r=>!['Kerja','Berangkat Kerja','Pulang Kerja','Tidur'].includes(r.cells[3].querySelector('select').value))
-    .reduce((s,r)=>s+convertTextToHours(r.cells[6].innerText),0);
-
-  const total=totalWork+totalSleep+totalOther || 1;
-
-  document.getElementById('progressWork').innerText=getSummaryText('work',totalWork/total*100);
-  document.getElementById('progressOther').innerText=getSummaryText('other',totalOther/total*100);
-  document.getElementById('progressSleep').innerText=getSummaryText('sleep',totalSleep/total*100);
-}
-
-/* filter by date */
-function filterByDate(){
-  const fd=document.getElementById('filterDate').value;
-  document.querySelectorAll('#activityTable tbody tr').forEach(row=>{
-    const d=row.cells[2].querySelector('input').value;
-    row.style.display=!fd || fd===d?'':'none';
-  });
-  calculateAllRows();
-}
-
-/* update semua row */
-function calculateAllRows(){
-  document.querySelectorAll('#activityTable tbody tr').forEach(row=>{
-    updateDuration(row.cells[3].querySelector('select'));
-  });
-}
-
-/* ---------- Firebase ---------- */
-function saveToFirebase(){
-  const data=[];
-  document.querySelectorAll('#activityTable tbody tr').forEach(row=>{
-    data.push({
-      hari: row.cells[1].querySelector('select').value,
-      tanggal: row.cells[2].querySelector('input').value,
-      jenis: row.cells[3].querySelector('select').value,
-      mulai: row.cells[4].querySelector('input').value,
-      selesai: row.cells[5].querySelector('input').value,
-      durasi: convertTextToHours(row.cells[6].innerText)
-    });
-  });
-  db.ref('jadwal').set(data).then(()=>alert('Tersimpan di Firebase'))
-  .catch(e=>alert('Error: '+e));
-}
-
-function loadFromFirebase(){
-  db.ref('jadwal').on('value', snapshot=>{
-    const val=snapshot.val();
-    const tbody=document.querySelector('#activityTable tbody');
-    tbody.innerHTML='';
-    if(val) Object.values(val).forEach(item=>addRow(item));
-    else addRow();
+    const m=tr.cells[4].querySelector("input").value;
+    const s=tr.cells[5].querySelector("input").value;
+    if(m && s){
+        const d=calcDur(m,s);
+        tr.querySelector(".durasi").innerText=d;
+    }
     calculateAllRows();
-  });
+    updateAllSummaries();
 }
 
-window.addEventListener('DOMContentLoaded',()=>{
-  loadFromFirebase();
+function calcDur(a,b){
+    const [h1,m1]=a.split(':').map(Number);
+    const [h2,m2]=b.split(':').map(Number);
+    let dh=h2-h1, dm=m2-m1;
+    if(dm<0){dm+=60; dh--;}
+    if(dh<0){dh+=24;}
+    return dh+":"+(dm<10?"0":"")+dm;
+}
+function removeRow(btn){
+    btn.closest("tr").remove();
+    calculateAllRows();
+    updateAllSummaries();
+}
+function calculateAllRows(){
+    const rows=tbody.querySelectorAll('tr');
+    rows.forEach((r,i)=>r.cells[0].innerText=i+1);
+}
+
+// ==== RANGKUMAN OTOMATIS ====
+function updateAllSummaries(){
+    const rows=tbody.querySelectorAll('tr');
+    let kerja=0, tidur=0, lain=0;
+
+    rows.forEach(r=>{
+        const jenis=r.cells[3].querySelector("select").value;
+        const [h,m]=r.cells[7].innerText.split(':').map(Number);
+        const total=h*60+m;
+
+        if(jenis==="Kerja") kerja+=total;
+        else if(jenis==="Tidur") tidur+=total;
+        else lain+=total;
+    });
+
+    const kJ=Math.floor(kerja/60), kM=kerja%60;
+    const tJ=Math.floor(tidur/60), tM=tidur%60;
+    const lJ=Math.floor(lain/60), lM=lain%60;
+
+    textKerja.innerText="Kerja: "+kJ+" jam "+kM+" menit";
+    textTidur.innerText="Tidur: "+tJ+" jam "+tM+" menit";
+    textLain.innerText="Aktivitas Lain: "+lJ+" jam "+lM+" menit";
+
+    descKerja.innerText = kerja > 12*60 ? "Jam kerjamu sangat tinggi" : "Jam kerjamu masih ideal";
+    descTidur.innerText = tidur < 6*60 ? "Heri perbaiki jam tidurmu" : "Waktu tidurmu cukup";
+    descLain.innerText = lain > 6*60 ? "Aktivitasmu berlebihan" : "Waktu aktivitasmu cukup";
+}
+
+// ==== FIREBASE SAVE ====
+saveBtn.addEventListener('click',()=>{
+    if(!UID) return alert("Harus login");
+    const data=[];
+    tbody.querySelectorAll('tr').forEach(r=>{
+        data.push({
+            hari:r.cells[1].querySelector("select").value,
+            tanggal:r.cells[2].querySelector("input").value,
+            jenis:r.cells[3].querySelector("select").value,
+            mulai:r.cells[4].querySelector("input").value,
+            selesai:r.cells[5].querySelector("input").value,
+            keterangan:r.cells[6].innerText,
+            durasi:r.cells[7].innerText
+        });
+    });
+    db.ref("users/"+UID+"/jadwal").set(data)
+    .then(()=>alert("Tersimpan ✔"))
+    .catch(e=>alert("Gagal: "+e.message));
+});
+
+// ==== LOAD ====
+function loadFromFirebase(){
+    db.ref("users/"+UID+"/jadwal").once("value").then(snap=>{
+        const val=snap.val();
+        tbody.innerHTML="";
+        if(val) val.forEach(v=>addRow(v));
+        else addRow();
+    });
+}
+
+// ==== FILTER ====
+addRowBtn.addEventListener("click",()=>addRow());
+filterDateIn.addEventListener("change",()=>{
+    const v=filterDateIn.value;
+    tbody.querySelectorAll("tr").forEach(r=>{
+        const t=r.cells[2].querySelector("input").value;
+        r.style.display=(v===""||v===t)?"":"none";
+    });
 });
 </script>
+
 </body>
 </html>
