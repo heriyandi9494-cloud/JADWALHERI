@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aktivitas Harian Heri - Neon</title>
+<title>Aktivitas Harian Heri - Bootstrap 5</title>
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -11,164 +14,169 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
 <style>
-body{
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background:#0b0b0b;color:#0ff;margin:0;padding:20px;
-  text-shadow:0 0 5px #0ff,0 0 10px #0ff,0 0 20px #0ff;
+body {
+    background: #0b0b0b;
+    color: #0ff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-h1{text-align:center;color:#0ff;text-shadow:0 0 10px #0ff,0 0 20px #0ff;font-size:28px;}
-#loginBox{
-  max-width:360px;margin:20px auto;padding:20px;
-  background:#111;border-radius:12px;color:white;
-  box-shadow:0 0 10px #0ff,0 0 20px #0ff;
-}
-#loginBox input{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:none;background:#222;color:#0ff;}
-#loginBox button{width:100%;padding:10px;border:none;margin-top:8px;border-radius:6px;font-weight:bold;background:#0ff;color:#000;cursor:pointer;}
-#loginBox button:hover{background:#0aa;color:#fff;}
-#mainApp{display:none;}
-.top-controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:10px;}
-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:14px;background:#111;color:#0ff;}
-table th, table td{border:1px solid #0ff;padding:6px 8px;text-align:center;}
-table th{background:#000;color:#0ff;text-shadow:0 0 5px #0ff;}
-select,input[type="time"],input[type="date"]{width:100%;padding:4px;background:#222;color:#0ff;border:none;border-radius:4px;}
-button.small{padding:6px;border-radius:6px;border:none;background:#0ff;color:#000;cursor:pointer;}
-button.small:hover{background:#0aa;color:#fff;}
-
-/* ===== RANGKUMAN BAR WARNA ===== */
-.summary{
-  text-align:left;margin-bottom:12px;
-  padding:10px;background:#111;border-radius:10px;
-  box-shadow:0 0 10px #0ff,0 0 20px #0ff;
-}
-.summary div{
-  margin-bottom:8px;font-weight:bold;
-}
-
-/* MERAH NEON untuk Kerja */
-#kerjaBar { 
-  color:#ff4b4b;
-  text-shadow:0 0 8px #ff4b4b,0 0 12px #ff4b4b;
-}
-
-/* HIJAU NEON untuk Tidur */
-#tidurBar { 
-  color:#00ff85;
-  text-shadow:0 0 8px #00ff85,0 0 12px #00ff85;
-}
-
-/* KUNING NEON untuk Aktivitas Lain */
-#lainBar { 
-  color:#ffe44b;
-  text-shadow:0 0 8px #ffe44b,0 0 12px #ffe44b;
-}
-
-@media(max-width:480px){table,th,td{font-size:12px}}
+h1,h2 { color:#0ff; text-align:center; }
+.card { background:#111; color:#0ff; border-radius:12px; }
+.form-control { background:#222; color:#0ff; border:none; }
+.btn-info { background:#0ff; color:#000; }
+.btn-info:hover { background:#0aa; color:#fff; }
+.btn-danger { background:#ff4b4b; color:#fff; }
+.btn-success { background:#00ff85; color:#000; }
+.table-dark { background:#111; color:#0ff; }
+.summary { background:#111; padding:15px; border-radius:10px; margin-bottom:20px; box-shadow:0 0 10px #0ff,0 0 20px #0ff; }
+#kerjaBar { color:#ff4b4b; text-shadow:0 0 8px #ff4b4b,0 0 12px #ff4b4b; }
+#tidurBar { color:#00ff85; text-shadow:0 0 8px #00ff85,0 0 12px #00ff85; }
+#lainBar { color:#ffe44b; text-shadow:0 0 8px #ffe44b,0 0 12px #ffe44b; }
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-<div id="loginBox">
-<h2 style="text-align:center;">𝐒𝐄𝐋𝐀𝐌𝐀𝐓 𝐃𝐀𝐓𝐀𝐍𝐆</h2>
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
-<button id="loginBtn">𝐋𝐎𝐆𝐈𝐍</button>
-<button id="registerBtn" style="background:#f54291;color:#fff;">𝐃𝐀𝐅𝐓𝐀𝐑 𝐁𝐀𝐑𝐔</button>
-</div>
+<div class="container py-4">
 
-<!-- APP -->
-<div id="mainApp">
-<h1>𝐀𝐊𝐓𝐈𝐕𝐈𝐓𝐀𝐒 𝐇𝐀𝐑𝐈𝐀𝐍 𝐇𝐄𝐑𝐈</h1>
-<div style="text-align:right;margin-bottom:10px;">
-<button id="logoutBtn" style="background:#ff4444;color:white;padding:8px;border:none;border-radius:6px;">𝐋𝐨𝐠𝐨𝐮𝐭</button>
-</div>
+  <!-- LOGIN -->
+  <div id="loginBox" class="card mx-auto" style="max-width:400px;">
+    <div class="card-body">
+      <h2 class="card-title mb-3">SELAMAT DATANG</h2>
+      <input type="email" id="email" class="form-control mb-3" placeholder="Email">
+      <input type="password" id="password" class="form-control mb-3" placeholder="Password">
+      <div class="d-grid gap-2">
+        <button id="loginBtn" class="btn btn-info fw-bold">LOGIN</button>
+        <button id="registerBtn" class="btn btn-danger">DAFTAR BARU</button>
+      </div>
+    </div>
+  </div>
 
-<!-- Rangkuman Neon -->
-<div class="summary">
-<div id="kerjaBar"><span id="textKerja">Kerja: 0 jam 0 menit</span> — <span id="descKerja"></span></div>
-<div id="tidurBar"><span id="textTidur">Tidur: 0 jam 0 menit</span> — <span id="descTidur"></span></div>
-<div id="lainBar"><span id="textLain">Aktivitas Lain: 0 jam 0 menit</span> — <span id="descLain"></span></div>
-</div>
+  <!-- APP -->
+  <div id="mainApp" style="display:none;">
+    <h1 class="mb-4">AKTIVITAS HARIAN HERI</h1>
 
-<div class="top-controls">
-<input type="date" id="filterDate">
-<button class="small" id="addRowBtn">𝐓𝐚𝐦𝐛𝐚𝐡 𝐑𝐨𝐰</button>
-<button class="small" id="saveBtn">𝐒𝐢𝐦𝐩𝐚𝐧</button>
-</div>
+    <div class="d-flex justify-content-end mb-3">
+      <button id="logoutBtn" class="btn btn-danger">Logout</button>
+    </div>
 
-<table id="activityTable">
-<thead>
-<tr>
-<th>𝐍𝐎</th><th>𝐇𝐀𝐑𝐈</th><th>𝐓𝐀𝐍𝐆𝐆𝐀𝐋</th><th>𝐉𝐄𝐍𝐈𝐒 𝐀𝐊𝐓𝐈𝐕𝐈𝐓𝐀𝐒</th><th>𝐌𝐔𝐋𝐀𝐈</th><th>𝐒𝐄𝐋𝐄𝐒𝐀𝐈</th><th>𝐊𝐄𝐓𝐄𝐑𝐀𝐍𝐆𝐀𝐍</th><th>𝐃𝐔𝐑𝐀𝐒𝐈</th><th>𝐀𝐊𝐒𝐈</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+    <!-- Rangkuman -->
+    <div class="summary">
+      <div id="kerjaBar"><span id="textKerja">Kerja: 0 jam 0 menit</span> — <span id="descKerja"></span></div>
+      <div id="tidurBar"><span id="textTidur">Tidur: 0 jam 0 menit</span> — <span id="descTidur"></span></div>
+      <div id="lainBar"><span id="textLain">Aktivitas Lain: 0 jam 0 menit</span> — <span id="descLain"></span></div>
+    </div>
+
+    <!-- Kontrol -->
+    <div class="row mb-3 g-2">
+      <div class="col-md-3">
+        <input type="date" id="filterDate" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-info w-100" id="addRowBtn">Tambah Row</button>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-success w-100" id="saveBtn">Simpan</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-dark table-striped table-bordered" id="activityTable">
+        <thead>
+          <tr>
+            <th>NO</th>
+            <th>HARI</th>
+            <th>TANGGAL</th>
+            <th>JENIS AKTIVITAS</th>
+            <th>MULAI</th>
+            <th>SELESAI</th>
+            <th>KETERANGAN</th>
+            <th>DURASI</th>
+            <th>AKSI</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div>
 </div>
 
 <script>
-// firebase config
-const firebaseConfig = {
-apiKey: "AIzaSyBAdGUDOwhDG5ifw4k8tert-FgmL80R3cc",
-authDomain: "aktivitas-harian-heri.firebaseapp.com",
-projectId: "aktivitas-harian-heri",
-storageBucket: "aktivitas-harian-heri.firebasestorage.app",
-messagingSenderId: "313235505642",
-appId: "1:313235505642:web:20865b04fa65e20b56b293",
-measurementId: "G-GCG86W43BX"
-};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.database();
-let UID=null;
+document.addEventListener('DOMContentLoaded', () => {
 
-// ==== DOM ====
-const loginBox=document.getElementById('loginBox');
-const mainApp=document.getElementById('mainApp');
-const emailIn=document.getElementById('email');
-const passIn=document.getElementById('password');
-const loginBtn=document.getElementById('loginBtn');
-const registerBtn=document.getElementById('registerBtn');
-const logoutBtn=document.getElementById('logoutBtn');
-const addRowBtn=document.getElementById('addRowBtn');
-const saveBtn=document.getElementById('saveBtn');
-const filterDateIn=document.getElementById('filterDate');
-const tbody=document.querySelector('#activityTable tbody');
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAdGUDOwhDG5ifw4k8tert-FgmL80R3cc",
+    authDomain: "aktivitas-harian-heri.firebaseapp.com",
+    projectId: "aktivitas-harian-heri",
+    storageBucket: "aktivitas-harian-heri.firebasestorage.app",
+    messagingSenderId: "313235505642",
+    appId: "1:313235505642:web:20865b04fa65e20b56b293",
+    measurementId: "G-GCG86W43BX"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth=firebase.auth();
+  const db=firebase.database();
+  let UID=null;
 
-// ==== AUTH ====
-loginBtn.addEventListener('click',()=>{
+  // DOM
+  const loginBox=document.getElementById('loginBox');
+  const mainApp=document.getElementById('mainApp');
+  const emailIn=document.getElementById('email');
+  const passIn=document.getElementById('password');
+  const loginBtn=document.getElementById('loginBtn');
+  const registerBtn=document.getElementById('registerBtn');
+  const logoutBtn=document.getElementById('logoutBtn');
+  const addRowBtn=document.getElementById('addRowBtn');
+  const saveBtn=document.getElementById('saveBtn');
+  const filterDateIn=document.getElementById('filterDate');
+  const tbody=document.querySelector('#activityTable tbody');
+  const textKerja=document.getElementById('textKerja');
+  const textTidur=document.getElementById('textTidur');
+  const textLain=document.getElementById('textLain');
+  const descKerja=document.getElementById('descKerja');
+  const descTidur=document.getElementById('descTidur');
+  const descLain=document.getElementById('descLain');
+
+  // AUTH
+  loginBtn.addEventListener('click', ()=>{
     const e=emailIn.value.trim(), p=passIn.value;
-    if(!e||!p) return alert('Isi email & password');
-    auth.signInWithEmailAndPassword(e,p).catch(err=>alert(err.message));
-});
-registerBtn.addEventListener('click',()=>{
-    const e=emailIn.value.trim(), p=passIn.value;
-    if(!e||!p) return alert('Isi email & password');
-    auth.createUserWithEmailAndPassword(e,p).then(()=>alert('Berhasil daftar')).catch(err=>alert(err.message));
-});
-logoutBtn.addEventListener('click',()=>auth.signOut());
+    if(!e || !p) return alert('Isi email & password');
+    auth.signInWithEmailAndPassword(e,p)
+        .then(()=>console.log('Login sukses'))
+        .catch(err=>alert(err.message));
+  });
 
-auth.onAuthStateChanged(user=>{
+  registerBtn.addEventListener('click', ()=>{
+    const e=emailIn.value.trim(), p=passIn.value;
+    if(!e || !p) return alert('Isi email & password');
+    auth.createUserWithEmailAndPassword(e,p)
+        .then(()=>alert('Berhasil daftar'))
+        .catch(err=>alert(err.message));
+  });
+
+  logoutBtn.addEventListener('click', ()=>auth.signOut());
+
+  auth.onAuthStateChanged(user=>{
     if(user){
-        UID=user.uid;
-        loginBox.style.display='none';
-        mainApp.style.display='block';
-        loadFromFirebase();
+      UID=user.uid;
+      loginBox.style.display='none';
+      mainApp.style.display='block';
+      loadFromFirebase();
     }else{
-        UID=null;
-        loginBox.style.display='block';
-        mainApp.style.display='none';
-        tbody.innerHTML='';
+      UID=null;
+      loginBox.style.display='block';
+      mainApp.style.display='none';
+      tbody.innerHTML='';
     }
-});
+  });
 
-// ==== TABLE FUNCTION ====
-function addRow(item={}){
+  // TABLE
+  function addRow(item={}) {
     const tr=document.createElement('tr');
     tr.innerHTML=`
-    <td>${tbody.children.length+1}</td>
-    <td><select onchange="updateRow(this)">
+      <td>${tbody.children.length+1}</td>
+      <td><select class="form-select" onchange="updateRow(this)">
         <option value="Senin">Senin</option>
         <option value="Selasa">Selasa</option>
         <option value="Rabu">Rabu</option>
@@ -176,9 +184,9 @@ function addRow(item={}){
         <option value="Jumat">Jumat</option>
         <option value="Sabtu">Sabtu</option>
         <option value="Minggu">Minggu</option>
-    </select></td>
-    <td><input type="date" value="${item.tanggal||''}" onchange="updateRow(this)"></td>
-    <td><select onchange="updateRow(this)">
+      </select></td>
+      <td><input type="date" class="form-control" value="${item.tanggal||''}" onchange="updateRow(this)"></td>
+      <td><select class="form-select" onchange="updateRow(this)">
         <option value="Kerja">Kerja</option>
         <option value="Tidur">Tidur</option>
         <option value="Aktivitas Lain">Aktivitas Lain</option>
@@ -188,133 +196,126 @@ function addRow(item={}){
         <option value="Santai">Santai</option>
         <option value="Berangkat Kerja">Berangkat Kerja</option>
         <option value="Pulang Kerja">Pulang Kerja</option>
-    </select></td>
-    <td><input type="time" value="${item.mulai||''}" onchange="updateRow(this)"></td>
-    <td><input type="time" value="${item.selesai||''}" onchange="updateRow(this)"></td>
-    <td class="keterangan">-</td>
-    <td class="durasi">0:00</td>
-    <td><button class="small" onclick="removeRow(this)">Hapus</button></td>
+      </select></td>
+      <td><input type="time" class="form-control" value="${item.mulai||''}" onchange="updateRow(this)"></td>
+      <td><input type="time" class="form-control" value="${item.selesai||''}" onchange="updateRow(this)"></td>
+      <td class="keterangan">-</td>
+      <td class="durasi">0:00</td>
+      <td><button class="btn btn-sm btn-danger" onclick="removeRow(this)">Hapus</button></td>
     `;
     tbody.appendChild(tr);
-
     if(item.jenis) tr.cells[3].querySelector('select').value=item.jenis;
     if(item.keterangan) tr.cells[6].innerText=item.keterangan;
     if(item.durasi) tr.cells[7].innerText=item.durasi;
-
     updateRow(tr.querySelector('select'));
-}
+  }
 
-function updateRow(el){
+  window.updateRow = function(el) {
     const tr=el.closest('tr');
     const jenis=tr.cells[3].querySelector('select').value;
     const ket=tr.querySelector('.keterangan');
-
-    if(jenis==="Kerja") ket.innerText="Heri sedang bekerja";
-    else if(jenis==="Tidur") ket.innerText="Heri sedang tidur";
-    else if(jenis==="Gym") ket.innerText="Heri sedang berolahraga";
-    else if(jenis==="Mandi") ket.innerText="Heri sedang mandi";
-    else if(jenis==="Santai") ket.innerText="Heri sedang santai";
-    else if(jenis==="Telponan") ket.innerText="Heri sedang menelpon";
-    else if(jenis==="Berangkat Kerja") ket.innerText="Heri sedang berangkat kerja";
-    else if(jenis==="Pulang Kerja") ket.innerText="Heri sedang pulang kerja";
-    else ket.innerText="Melakukan aktivitas lain";
+    ket.innerText = jenis==="Kerja"?"Heri sedang bekerja":
+                    jenis==="Tidur"?"Heri sedang tidur":
+                    jenis==="Gym"?"Heri sedang berolahraga":
+                    jenis==="Mandi"?"Heri sedang mandi":
+                    jenis==="Santai"?"Heri sedang santai":
+                    jenis==="Telponan"?"Heri sedang menelpon":
+                    jenis==="Berangkat Kerja"?"Heri sedang berangkat kerja":
+                    jenis==="Pulang Kerja"?"Heri sedang pulang kerja":"Melakukan aktivitas lain";
 
     const m=tr.cells[4].querySelector("input").value;
     const s=tr.cells[5].querySelector("input").value;
     if(m && s){
-        const d=calcDur(m,s);
-        tr.querySelector(".durasi").innerText=d;
+      const d=calcDur(m,s);
+      tr.querySelector(".durasi").innerText=d;
     }
     calculateAllRows();
     updateAllSummaries();
-}
+  }
 
-function calcDur(a,b){
+  function calcDur(a,b){
     const [h1,m1]=a.split(':').map(Number);
     const [h2,m2]=b.split(':').map(Number);
     let dh=h2-h1, dm=m2-m1;
     if(dm<0){dm+=60; dh--;}
     if(dh<0){dh+=24;}
     return dh+":"+(dm<10?"0":"")+dm;
-}
-function removeRow(btn){
+  }
+
+  window.removeRow = function(btn){
     btn.closest("tr").remove();
     calculateAllRows();
     updateAllSummaries();
-}
-function calculateAllRows(){
+  }
+
+  function calculateAllRows(){
     const rows=tbody.querySelectorAll('tr');
     rows.forEach((r,i)=>r.cells[0].innerText=i+1);
-}
+  }
 
-// ==== RANGKUMAN OTOMATIS ====
-function updateAllSummaries(){
+  function updateAllSummaries(){
     const rows=tbody.querySelectorAll('tr');
     let kerja=0, tidur=0, lain=0;
-
     rows.forEach(r=>{
-        const jenis=r.cells[3].querySelector("select").value;
-        const [h,m]=r.cells[7].innerText.split(':').map(Number);
-        const total=h*60+m;
-
-        if(jenis==="Kerja") kerja+=total;
-        else if(jenis==="Tidur") tidur+=total;
-        else lain+=total;
+      const jenis=r.cells[3].querySelector("select").value;
+      const [h,m]=r.cells[7].innerText.split(':').map(Number);
+      const total=h*60+m;
+      if(jenis==="Kerja") kerja+=total;
+      else if(jenis==="Tidur") tidur+=total;
+      else lain+=total;
     });
-
     const kJ=Math.floor(kerja/60), kM=kerja%60;
     const tJ=Math.floor(tidur/60), tM=tidur%60;
     const lJ=Math.floor(lain/60), lM=lain%60;
-
     textKerja.innerText="Kerja: "+kJ+" jam "+kM+" menit";
     textTidur.innerText="Tidur: "+tJ+" jam "+tM+" menit";
     textLain.innerText="Aktivitas Lain: "+lJ+" jam "+lM+" menit";
+    descKerja.innerText = kerja>12*60?"Jam kerjamu sangat tinggi":"Jam kerjamu masih ideal";
+    descTidur.innerText = tidur<6*60?"Heri perbaiki jam tidurmu":"Waktu tidurmu cukup";
+    descLain.innerText = lain>6*60?"Aktivitasmu berlebihan":"Waktu aktivitasmu cukup";
+  }
 
-    descKerja.innerText = kerja > 12*60 ? "Jam kerjamu sangat tinggi" : "Jam kerjamu masih ideal";
-    descTidur.innerText = tidur < 6*60 ? "Heri perbaiki jam tidurmu" : "Waktu tidurmu cukup";
-    descLain.innerText = lain > 6*60 ? "Aktivitasmu berlebihan" : "Waktu aktivitasmu cukup";
-}
-
-// ==== FIREBASE SAVE ====
-saveBtn.addEventListener('click',()=>{
+  saveBtn.addEventListener('click', ()=>{
     if(!UID) return alert("Harus login");
     const data=[];
     tbody.querySelectorAll('tr').forEach(r=>{
-        data.push({
-            hari:r.cells[1].querySelector("select").value,
-            tanggal:r.cells[2].querySelector("input").value,
-            jenis:r.cells[3].querySelector("select").value,
-            mulai:r.cells[4].querySelector("input").value,
-            selesai:r.cells[5].querySelector("input").value,
-            keterangan:r.cells[6].innerText,
-            durasi:r.cells[7].innerText
-        });
+      data.push({
+        hari:r.cells[1].querySelector("select").value,
+        tanggal:r.cells[2].querySelector("input").value,
+        jenis:r.cells[3].querySelector("select").value,
+        mulai:r.cells[4].querySelector("input").value,
+        selesai:r.cells[5].querySelector("input").value,
+        keterangan:r.cells[6].innerText,
+        durasi:r.cells[7].innerText
+      });
     });
     db.ref("users/"+UID+"/jadwal").set(data)
-    .then(()=>alert("Tersimpan ✔"))
-    .catch(e=>alert("Gagal: "+e.message));
-});
+      .then(()=>alert("Tersimpan ✔"))
+      .catch(e=>alert("Gagal: "+e.message));
+  });
 
-// ==== LOAD ====
-function loadFromFirebase(){
+  function loadFromFirebase(){
     db.ref("users/"+UID+"/jadwal").once("value").then(snap=>{
-        const val=snap.val();
-        tbody.innerHTML="";
-        if(val) val.forEach(v=>addRow(v));
-        else addRow();
+      const val=snap.val();
+      tbody.innerHTML="";
+      if(val) val.forEach(v=>addRow(v));
+      else addRow();
     });
-}
+  }
 
-// ==== FILTER ====
-addRowBtn.addEventListener("click",()=>addRow());
-filterDateIn.addEventListener("change",()=>{
+  addRowBtn.addEventListener("click",()=>addRow());
+  filterDateIn.addEventListener("change",()=>{
     const v=filterDateIn.value;
     tbody.querySelectorAll("tr").forEach(r=>{
-        const t=r.cells[2].querySelector("input").value;
-        r.style.display=(v===""||v===t)?"":"none";
+      const t=r.cells[2].querySelector("input").value;
+      r.style.display=(v===""||v===t)?"":"none";
     });
+  });
+
 });
 </script>
 
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
